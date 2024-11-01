@@ -12,15 +12,16 @@ class Opening:
 
 class Mario:
     def __init__(self):
-            self.x, self.y = 0, 90
+            self.x, self.y = 50, 90
             self.frame = 0
             self.mario = load_image('small_mario_runningsheet.png')
     def update(self):
         self.frame = (self.frame+1) %4
+        self.x += direction *10
         pass
             # self.x += 5
     def draw(self):
-            self.mario.clip_draw(self.frame*35, 0, 34, 26, 200, 132, 100, 100)
+            self.mario.clip_draw(self.frame*35, 0, 34, 26, self.x, 132, 100, 100)
 
 class World_1:
     def __init__(self):
@@ -29,32 +30,42 @@ class World_1:
 
 def handle_events():
     global running
+    global direction
 
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
-            break
+        elif event.type == SDL_KEYDOWN:
+            if event.key == SDLK_RIGHT:
+                direction+=1
+                pass
+            elif event.key == SDLK_LEFT:
+                direction-=1
+                pass
+            elif event.key == SDLK_ESCAPE:
+                running = False
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_RIGHT:
+                direction -=1
+            elif event.key == SDLK_LEFT:
+                direction +=1
+
 
 def reset_world():
     global running
-    global mario
-    global opening
+    global mario, direction
+    direction = 0
     #global world
 
     running = True
     #world = []
 
     mario = Mario()
-    opening = Opening()
     #world.append(mario)
 
 
 def update_world():
-    # for o in world:
-    #     o.update()
     mario.update()
     pass
 
@@ -63,7 +74,6 @@ def render_world():
     # for o in world:
     #     o.draw()
     mario.draw()
-    opening.draw()
     update_canvas()
 
 open_canvas()
@@ -73,6 +83,6 @@ while running:
     handle_events()
     update_world()
     render_world()
-    delay(0.1)
+    delay(0.01)
 
 close_canvas()
