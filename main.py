@@ -21,12 +21,17 @@ class Mario:
         pass
             # self.x += 5
     def draw(self):
-            self.mario.clip_draw(self.frame*35, 0, 34, 26, self.x, 132, 100, 100)
+            self.mario.clip_draw(self.frame*35, 0, 34, 26, self.x, 126, 100, 100)
 
 class World_1:
     def __init__(self):
-        self.x, self.y
-    pass
+        self.x = 0
+        self.world_1 = load_image('World-1.png')
+    def update(self):
+        pass
+
+    def draw(self):
+        self.world_1.clip_draw(self.x, 0, 320, 240, 400, 300, 800, 600)
 
 def handle_events():
     global running
@@ -54,7 +59,8 @@ def handle_events():
 
 def reset_world():
     global running
-    global mario, direction
+    global mario, world
+    global direction
     direction = 0
     #global world
 
@@ -62,6 +68,7 @@ def reset_world():
     #world = []
 
     mario = Mario()
+    world = World_1()
     #world.append(mario)
 
 
@@ -73,6 +80,7 @@ def render_world():
     clear_canvas()
     # for o in world:
     #     o.draw()
+    world.draw()
     mario.draw()
     update_canvas()
 
