@@ -10,20 +10,12 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_RIGHT:
-                direction+=1
-                pass
-            elif event.key == SDLK_LEFT:
-                direction-=1
-                pass
-            elif event.key == SDLK_ESCAPE:
-                running = False
-        elif event.type == SDL_KEYUP:
-            if event.key == SDLK_RIGHT:
-                direction -=1
-            elif event.key == SDLK_LEFT:
-                direction +=1
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
+        else:
+            if event.type in (SDL_KEYDOWN, SDL_KEYUP):
+                # input 이벤트를 mario 가 처리
+                mario.handle_event(event)
 
 
 def reset_world():
