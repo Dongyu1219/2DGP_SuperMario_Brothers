@@ -15,7 +15,7 @@ class StateMachine:
         self.cur_state.enter(self.o, ('START', 0))
     def add_event(self, e):
         self.event_que.append(e)
-    def set_transition(self, transitions):
+    def set_transitions(self, transitions):
         self.transtions = transitions
     def update(self):
         self.cur_state.do(self.o)
