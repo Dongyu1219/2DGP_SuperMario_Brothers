@@ -5,13 +5,13 @@ class Mario:
     def __init__(self):
             self.x, self.y = 0, 90
             self.frame = 0
-            self.image = load_image('mario_image.png')
+            self.image = load_image('small_mario_runningsheet.png')
     def update(self):
-        self.frame = (self.frame+1) %8
+        self.frame = (self.frame+1) %4
         pass
             # self.x += 5
     def draw(self):
-            self.image.draw_now(400,30)
+            self.image.clip_draw(self.frame*35, 0, 34, 26, 200, 200, 100, 100)
 
 def handle_events():
     global running
@@ -56,6 +56,6 @@ while running:
     handle_events()
     update_world()
     render_world()
-    delay(0.01)
+    delay(0.1)
 
 close_canvas()
