@@ -28,6 +28,7 @@ class World_1:
         self.x = 0
         self.world_1 = load_image('World-1.png')
     def update(self):
+        self.x += direction*20
         pass
 
     def draw(self):
@@ -74,6 +75,7 @@ def reset_world():
 
 def update_world():
     mario.update()
+    world.update()
     pass
 
 def render_world():
