@@ -15,14 +15,27 @@ class Idle:
         mario.frame = (mario.frame + 1) % 4
     @staticmethod
     def draw(mario):
-        mario.mario.clip_draw(mario.frame*35, 0, 34, 26, mario.x, mario.y, 100, 100)
+        mario.image.clip_draw(mario.frame*35, 0, 34, 26, mario.x, mario.y, 100, 100)
+
+class Sleep:
+    @staticmethod
+    def enter(mario):
+        mario.frame = 0
+    @staticmethod
+    def exit(mario):
+        pass
+    @staticmethod
+    def do(mario):
+        pass
+    def draw(mario):
+        pass
 
 
 class Mario:
     def __init__(self):
             self.x, self.y = 100, 126
             self.frame = 0
-            self.mario = load_image('small_mario_runningsheet.png')
+            self.image = load_image('small_mario_runningsheet.png')
             self.state_machine = StateMachine(self)
             self.state_machine.start(Idle)
     def update(self):
