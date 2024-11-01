@@ -54,9 +54,11 @@ def render_world():
          o.draw()
     update_canvas()
 
+
 open_canvas()
 reset_world()
 
+#게임 루프
 while running:
     handle_events()
     update_world()
