@@ -12,7 +12,7 @@ class Opening:
 
 class Mario:
     def __init__(self):
-            self.x, self.y = 50, 90
+            self.x, self.y = 100, 90
             self.frame = 0
             self.mario = load_image('small_mario_runningsheet.png')
     def update(self):
@@ -21,7 +21,7 @@ class Mario:
         pass
             # self.x += 5
     def draw(self):
-            self.mario.clip_draw(self.frame*35, 0, 34, 26, self.x, 126, 100, 100)
+            self.mario.clip_draw(self.frame*35, 0, 34, 26, 100, 126, 100, 100)
 
 class World_1:
     def __init__(self):
@@ -29,6 +29,10 @@ class World_1:
         self.world_1 = load_image('World-1.png')
     def update(self):
         self.x += direction*20
+        if self.x < 0:
+            self.x = 0
+        elif self.x > 3508:
+            self.x = 3508
         pass
 
     def draw(self):
@@ -74,6 +78,7 @@ def reset_world():
 
 
 def update_world():
+
     mario.update()
     world.update()
     pass
