@@ -16,6 +16,7 @@ def handle_events():
             if event.type in (SDL_KEYDOWN, SDL_KEYUP):
                 # input 이벤트를 mario 가 처리
                 mario.handle_event(event)
+                map.handle_events(event)
 
 
 def reset_world():
@@ -35,7 +36,7 @@ def reset_world():
     world.append(mario)
 
 def update_world():
-    map.x += direction * 20
+    map.update()
     for o in world:
         o.update()
     pass
