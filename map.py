@@ -7,7 +7,7 @@ class Map_1:
         self.direction = 0
         self.world_1 = load_image('World-1.png')
     def update(self):
-        self.x += self.direction *15
+        self.x += self.direction *5
         if self.x < 0:
             self.x = 0
         elif self.x > 3508:

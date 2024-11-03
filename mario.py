@@ -57,9 +57,11 @@ class Run:
     def enter(mario, e):
         print('Mario Run Enter')
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            mario.direction = 1
+            pass
+            #mario.direction = 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            mario.direction = -1
+            pass
+            #mario.direction = -1
 
     @staticmethod
     def exit(mario, e):
