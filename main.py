@@ -1,6 +1,7 @@
 from pico2d import *
 from map import Map_1
 from mario import Mario
+import game_world
 
 def handle_events():
     global running
@@ -24,27 +25,25 @@ def reset_world():
     global mario, map
     global direction
     direction = 0
-    global world
 
     running = True
-    world = []
 
     map = Map_1()
-    world.append(map)
+    game_world.add_object(map, 0)
 
     mario = Mario()
-    world.append(mario)
+    game_world.add_object(mario, 1)
 
 def update_world():
-    map.update()
-    for o in world:
-        o.update()
+    # map.update()
+    # for o in world:
+    #     o.update()
+    game_world.update()
     pass
 
 def render_world():
     clear_canvas()
-    for o in world:
-         o.draw()
+    game_world.render()
     update_canvas()
 
 
