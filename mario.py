@@ -17,7 +17,7 @@ class Mario:
                     Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump},
                     Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump},
                     Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
-                    Jump : {right_down: Run, left_down: Run, left_up: Run, right_up: Run}
+                    Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump}
                 }
             )
     def update(self):
@@ -99,7 +99,7 @@ class Jump:
         mario.jump_speed -=1
         if mario.y <= mario.jump_start_y:
             mario.y = mario.jump_start_y
-            mario.state_machine.add_event(('up_up', Idle))  # 점프 종료 후 Idle 상태로 전환
+            mario.state_machine.add_event(('JUMP_DOWN', 0))
         pass
 
     def draw(mario):
