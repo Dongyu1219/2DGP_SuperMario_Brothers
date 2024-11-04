@@ -7,9 +7,9 @@ class Mario:
             self.x, self.y = 100, 126
             self.frame = 0
             self.direction = 0
-            self.image = load_image('small_mario_runningsheet.png')
-            self.sit_image = load_image('small_mario_sit_image.png')
-            self.jump_image = load_image('small_mario_jump_image.png')
+            self.image = load_image('resource/mario/small_mario_runningsheet.png')
+            self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
+            self.jump_image = load_image('resource/mario/small_mario_jump_image.png')
             self.state_machine = StateMachine(self)
             self.state_machine.start(Idle)
             self.state_machine.set_transitions(

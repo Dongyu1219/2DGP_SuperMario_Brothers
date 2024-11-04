@@ -5,7 +5,7 @@ class Map_1:
     def __init__(self):
         self.x = 0
         self.direction = 0
-        self.world_1 = load_image('World-1.png')
+        self.world_1 = load_image('resource/map/World-1.png')
     def update(self):
         self.x += self.direction *5
         if self.x < 0:
