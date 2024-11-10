@@ -17,6 +17,7 @@ def handle_events():
         #     game_framework.push_mode(item_mode)
         else:
             mario.handle_event(event)
+            map.handle_events(event)
 
 
 def init():
@@ -41,6 +42,7 @@ def draw():
     clear_canvas()
     game_world.render()
     update_canvas()
+    delay(0.02)
 
 def pause():
     pass

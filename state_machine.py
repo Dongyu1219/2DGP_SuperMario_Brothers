@@ -8,20 +8,40 @@ class StateMachine:
         self.cur_state = state
         self.cur_state.enter(self.obj, ('START', 0))
     def add_event(self, e):
+        print(f'    DEBUG: New event {e} added to event Que')
         self.event_que.append(e)
     def set_transitions(self, transitions):
         self.set_transitions = transitions
+
     def update(self):
         self.cur_state.do(self.obj)
         if self.event_que:
-            e = self.event_que.pop(0)
-            for check_event, next_state in self.set_transitions[self.cur_state].items():
-                if check_event(e):
-                    self.cur_state.exit(self.obj, e)
-                    self.cur_state = next_state
-                    self.cur_state.enter(self.obj, e)
-                    #return
-                print("     ERROR: ENTER EVENTS")       # 이 시점으로 왔다는 것은, event 에 따른 전환 못함.
+            event = self.event_que.pop(0)
+            self.handle_event(event)
+
+    def handle_event(self, e):
+        for event, next_state in self.set_transitions[self.cur_state].items():
+            if event(e):
+                print(f'Exit from {self.cur_state}')
+                self.cur_state.exit(self.obj, e)
+                self.cur_state = next_state
+                print(f'Enter into {self.cur_state}')
+                self.cur_state.enter(self.obj, e)
+                return
+
+        print(f'        Warning: Event [{e}] at State [{self.cur_state}] not handled')
+
+    # def update(self):
+    #     self.cur_state.do(self.obj)
+    #     if self.event_que:
+    #         e = self.event_que.pop(0)
+    #         for check_event, next_state in self.set_transitions[self.cur_state].items():
+    #             if check_event(e):
+    #                 self.cur_state.exit(self.obj, e)
+    #                 self.cur_state = next_state
+    #                 self.cur_state.enter(self.obj, e)
+    #                 #return
+    #             print("     ERROR: ENTER EVENTS")       # 이 시점으로 왔다는 것은, event 에 따른 전환 못함.
 
     def draw(self):
         self.cur_state.draw(self.obj)
