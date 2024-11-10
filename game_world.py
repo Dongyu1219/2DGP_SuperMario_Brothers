@@ -23,3 +23,7 @@ def remove_object(o):
             layer.remove(o)
             return          #지우는 미션은 달성. 안하면 layer 만큼 반복함
     print('ERROR : DO NOT EXIST')
+
+def clear():
+    for layer in world:
+        layer.clear()
