@@ -15,7 +15,7 @@ class Mario:
             self.state_machine.set_transitions(
                 {
                     Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump},
-                    Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump},
+                    Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, up_up: Jump},
                     Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
                     Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump}
                 }
@@ -51,7 +51,10 @@ class Idle:
             mario.state_machine.add_event(('TIME_OUT', 0))
     @staticmethod
     def draw(mario):
-        mario.image.clip_draw(0, 0, 34, 26, mario.x, mario.y, 100, 100)
+        if mario.direction >= 0 :
+            mario.image.clip_draw(0, 0, 34, 26, mario.x, mario.y, 100, 100)
+        else:
+            mario.image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
 
 class Run:
     @staticmethod
@@ -59,10 +62,10 @@ class Run:
         print('Mario Run Enter')
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             pass
-            #mario.direction = 1
+            mario.direction = 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
             pass
-            #mario.direction = -1
+            mario.direction = -1
 
     @staticmethod
     def exit(mario, e):
@@ -71,12 +74,15 @@ class Run:
 
     @staticmethod
     def do(mario):
-        mario.x += mario.direction*5
+        #mario.x += mario.direction*5
         mario.frame = (mario.frame+1)%4
         pass
 
     def draw(mario):
-        mario.image.clip_draw(mario.frame*35, 0, 34, 26, mario.x, mario.y, 100, 100)
+        if mario.direction ==1 :
+            mario.image.clip_draw(mario.frame*35, 0, 34, 26, mario.x, mario.y, 100, 100)
+        else:
+            mario.image.clip_composite_draw(mario.frame * 35, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
         pass
 
 class Jump:
@@ -105,6 +111,7 @@ class Jump:
     def draw(mario):
         mario.jump_image.draw(mario.x, mario.y, 100, 100)
         pass
+
 
 class Sleep:
     @staticmethod

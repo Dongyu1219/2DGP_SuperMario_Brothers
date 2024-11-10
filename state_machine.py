@@ -20,7 +20,7 @@ class StateMachine:
                     self.cur_state.exit(self.obj, e)
                     self.cur_state = next_state
                     self.cur_state.enter(self.obj, e)
-                    return
+                    #return
                 print("     ERROR: ENTER EVENTS")       # 이 시점으로 왔다는 것은, event 에 따른 전환 못함.
 
     def draw(self):
