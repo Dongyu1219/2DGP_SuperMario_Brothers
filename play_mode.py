@@ -1,23 +1,31 @@
 from pico2d import *
-import game_world
 from map import Map_1
 from mario import Mario
+import game_world
 
-# def handle_events():
-#     events = get_events()
-#     for event in events:
-#         if event.type == SDL_QUIT:
-#             game_framework.quit()
-#         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-#             game_framework.change_mode(title_mode)
-#         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_i):
-#             game_framework.push_mode(item_mode)
-#         else:
-#             boy.handle_event(event)
-#
+def handle_events():
+
+    global direction
+    global running
+
+    events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            running = False
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
+        else:
+            if event.type in (SDL_KEYDOWN, SDL_KEYUP):
+                # input 이벤트를 mario 가 처리
+                mario.handle_event(event)
+                map.handle_events(event)
+
 
 def init():
     global mario
+    global map
+    global running
+    running = True
 
     map = Map_1()
     game_world.add_object(map, 0)
@@ -33,12 +41,19 @@ def update():
     game_world.update()
 
 def draw():
+
     clear_canvas()
     game_world.render()
     update_canvas()
 
 open_canvas()
 init()
+while running:
+    handle_events()
+    update()
+    draw()
+    delay(0.01)
+    finish()
 
 def pause():
     pass
