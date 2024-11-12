@@ -14,7 +14,7 @@ class Mario:
             self.state_machine.start(Idle)
             self.state_machine.set_transitions(
                 {
-                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump},
+                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle},
                     Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, up_up: Jump},
                     Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
                     Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump}
