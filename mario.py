@@ -1,6 +1,7 @@
 from pico2d import load_image, get_time
 
 from state_machine import *
+from map import *
 
 class Mario:
     def __init__(self):
@@ -15,7 +16,7 @@ class Mario:
             self.state_machine.set_transitions(
                 {
                     Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle},
-                    Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, up_up: Jump},
+                    Run: {right_down: Run, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump},
                     Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
                     Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump}
                 }
@@ -61,10 +62,9 @@ class Run:
     def enter(mario, e):
         print('Mario Run Enter')
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            pass
             mario.direction = 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            pass
+
             mario.direction = -1
 
     @staticmethod
@@ -74,7 +74,8 @@ class Run:
 
     @staticmethod
     def do(mario):
-        #mario.x += mario.direction*5
+        if mario.x< 200:
+            mario.x += mario.direction*3
         mario.frame = (mario.frame+1)%4
         pass
 
@@ -106,10 +107,12 @@ class Jump:
         if mario.y <= mario.jump_start_y:
             mario.y = mario.jump_start_y
             mario.state_machine.add_event(('JUMP_DOWN', 0))
-        pass
 
     def draw(mario):
-        mario.jump_image.draw(mario.x, mario.y, 100, 100)
+        if mario.direction ==1 :
+            mario.jump_image.draw(mario.x, mario.y, 100, 100)
+        else:
+            mario.jump_image.composite_draw(0, 'h', mario.x, mario.y, 100, 100)
         pass
 
 
