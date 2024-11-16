@@ -36,7 +36,6 @@ class StateMachine:
         self.cur_state.draw(self.obj)
 
 
-
 def start_event(e):
     return e[0] == 'START'
 def space_down(e):

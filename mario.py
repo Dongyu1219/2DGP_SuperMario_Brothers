@@ -8,6 +8,8 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
+
+
 class Mario:
     def __init__(self):
             self.x, self.y = 100, 126
@@ -26,6 +28,8 @@ class Mario:
                     Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump}
                 }
             )
+
+
     def update(self):
         self.state_machine.update()
         #self.frame = (self.frame+1) %4
@@ -79,8 +83,9 @@ class Run:
 
     @staticmethod
     def do(mario):
-        if mario.x< 200:
-            mario.x += mario.direction*3
+        #
+        # if mario.x< 200:
+        #     mario.x += mario.direction*3
         mario.frame = (mario.frame+1)%4
         pass
 

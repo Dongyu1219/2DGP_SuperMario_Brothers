@@ -1,10 +1,15 @@
 from pico2d import *
+
+from camera import Camera
 from map import Map_1
 from mario import Mario
 import game_world
 import game_framework
 import title_mode
+from enemy import Goomba
 #import item_mode
+
+camera = None
 
 def handle_events():
     events = get_events()
@@ -18,14 +23,21 @@ def handle_events():
         else:
             mario.handle_event(event)
             map.handle_events(event)
-
+            camera.handle_events(event)
 
 def init():
     global mario
     global map
+    global goomba
+    global camera
 
-    map = Map_1()
+    camera = Camera()
+
+    map = Map_1(camera)
     game_world.add_object(map, 0)
+
+    goomba = Goomba()
+    game_world.add_object(goomba, 1)
 
     mario = Mario()
     game_world.add_object(mario, 1)
@@ -35,7 +47,9 @@ def finish():
     pass
 
 def update():
+    camera.update()
     game_world.update()
+
 
 def draw():
 
@@ -49,4 +63,3 @@ def pause():
 
 def resume():
     pass
-

@@ -1,11 +1,11 @@
 from pico2d import *
 from map import Map_1
 from mario import Mario
+from enemy import Goomba
 import game_world
 
 def handle_events():
     global running
-    global direction
 
     events = get_events()
     for event in events:
@@ -23,16 +23,18 @@ def handle_events():
 def reset_world():
     global running
     global mario, map
-    global direction
-    direction = 0
-
+    global ground_enemies
     running = True
 
     map = Map_1()
     game_world.add_object(map, 0)
 
+    ground_enemies = Goomba()
+    game_world.add_object(ground_enemies, 1)
+
     mario = Mario()
     game_world.add_object(mario, 1)
+
 
 def update_world():
     # map.update()
