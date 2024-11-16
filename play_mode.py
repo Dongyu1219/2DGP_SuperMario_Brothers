@@ -36,7 +36,7 @@ def init():
     map = Map_1(camera)
     game_world.add_object(map, 0)
 
-    goomba = Goomba()
+    goomba = Goomba(camera)
     game_world.add_object(goomba, 1)
 
     mario = Mario()

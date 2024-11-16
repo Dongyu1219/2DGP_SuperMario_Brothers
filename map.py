@@ -1,7 +1,5 @@
 from pico2d import load_image
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT
-
-
 class Map_1:
     def __init__(self, camera):
         self.x = 0
