@@ -8,7 +8,7 @@ class StateMachine:
         self.cur_state = state
         self.cur_state.enter(self.obj, ('START', 0))
     def add_event(self, e):
-        print(f'    DEBUG: New event {e} added to event Que')
+        #print(f'    DEBUG: New event {e} added to event Que')
         self.event_que.append(e)
     def set_transitions(self, transitions):
         self.set_transitions = transitions
@@ -22,14 +22,14 @@ class StateMachine:
     def handle_event(self, e):
         for event, next_state in self.set_transitions[self.cur_state].items():
             if event(e):
-                print(f'Exit from {self.cur_state}')
+                #print(f'Exit from {self.cur_state}')
                 self.cur_state.exit(self.obj, e)
                 self.cur_state = next_state
-                print(f'Enter into {self.cur_state}')
+                #print(f'Enter into {self.cur_state}')
                 self.cur_state.enter(self.obj, e)
                 return
 
-        print(f'        Warning: Event [{e}] at State [{self.cur_state}] not handled')
+        #print(f'        Warning: Event [{e}] at State [{self.cur_state}] not handled')
 
 
     def draw(self):

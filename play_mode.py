@@ -6,7 +6,8 @@ from mario import Mario
 import game_world
 import game_framework
 import title_mode
-from enemy import Goomba
+from enemy import Goomba, Flower
+
 #import item_mode
 
 camera = None
@@ -28,7 +29,8 @@ def handle_events():
 def init():
     global mario
     global map
-    global goomba
+    global goomba1, goomba2
+    global flower
     global camera
 
     camera = Camera()
@@ -36,8 +38,11 @@ def init():
     map = Map_1(camera)
     game_world.add_object(map, 0)
 
-    goomba = Goomba(camera)
-    game_world.add_object(goomba, 1)
+    goomba1 = Goomba(camera)
+    game_world.add_object(goomba1, 1)
+
+    flower = Flower(camera)
+    game_world.add_object(flower, 1)
 
     mario = Mario()
     game_world.add_object(mario, 1)

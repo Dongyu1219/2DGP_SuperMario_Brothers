@@ -9,9 +9,9 @@ class Camera:
         self.x += self.direction * 5
         if self.x < 0:
             self.x = 0
-        elif self.x > 3508 - 800:  # 맵의 오른쪽 경계에 도달
-            self.x = 3508 - 800
-
+        elif self.x > 1200 :  # 맵의 오른쪽 경계에 도달
+            self.x = 1200
+        print(f"Camera X: {self.x}")
     def handle_events(self, event):
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_RIGHT:

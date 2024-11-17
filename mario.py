@@ -8,8 +8,6 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-
-
 class Mario:
     def __init__(self):
             self.x, self.y = 100, 126
@@ -50,11 +48,12 @@ class Mario:
 class Idle:
     @staticmethod
     def enter(mario,e):
-        print('Mario Idle Enter')
+        #print('Mario Idle Enter')
         mario.wait_time = get_time()
     @staticmethod
     def exit(mario, e):
-        print('Boy Idle Exit')
+        #print('Boy Idle Exit')
+        pass
     @staticmethod
     def do(mario):
         if get_time() - mario.wait_time >2:
@@ -69,7 +68,7 @@ class Idle:
 class Run:
     @staticmethod
     def enter(mario, e):
-        print('Mario Run Enter')
+        #print('Mario Run Enter')
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             mario.direction = 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
@@ -78,7 +77,7 @@ class Run:
 
     @staticmethod
     def exit(mario, e):
-        print('Mario Sleep Exit')
+        #print('Mario Sleep Exit')
         pass
 
     @staticmethod
@@ -99,7 +98,7 @@ class Run:
 class Jump:
     @staticmethod
     def enter(mario, e):
-        print('Mario Jump Enter')
+        #print('Mario Jump Enter')
         if up_down(e):
             mario.jump_start_y = mario.y
             mario.jump_speed = 15
@@ -107,7 +106,7 @@ class Jump:
 
     @staticmethod
     def exit(mario, e):
-        print('Mario Jump Exit')
+        #print('Mario Jump Exit')
         pass
 
     @staticmethod
@@ -129,10 +128,11 @@ class Jump:
 class Sleep:
     @staticmethod
     def enter(mario,e):
-        print('Mario Sleep Enter')
+        #print('Mario Sleep Enter')
+        pass
     @staticmethod
     def exit(mario, e):
-        print('Mario Sleep Exit')
+        #print('Mario Sleep Exit')
         pass
     @staticmethod
     def do(mario):
