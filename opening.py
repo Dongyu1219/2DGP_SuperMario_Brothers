@@ -1,6 +1,4 @@
-
 from pico2d import load_image
-
 
 class Opening:
     def __init__(self):

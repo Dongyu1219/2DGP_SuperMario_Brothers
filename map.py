@@ -12,5 +12,5 @@ class Map_1:
 
     def draw(self):
         #global camera
-        self.world_1.clip_draw(self.camera.x, 0, 320, 240, 400, 300, 800, 600)
+        self.world_1.clip_draw(int(self.camera.x), 0, 320, 240, 400, 300, 800, 600)
 

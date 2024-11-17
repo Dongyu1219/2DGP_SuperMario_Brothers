@@ -1,12 +1,8 @@
 from pico2d import load_image, get_time
+from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION
+import game_framework
 from state_machine import *
 from map import *
-
-PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 20.0  # Km / Hour
-RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 class Mario:
     def __init__(self):
@@ -85,14 +81,14 @@ class Run:
         #
         # if mario.x< 200:
         #     mario.x += mario.direction*3
-        mario.frame = (mario.frame+1)%4
+        mario.frame = (mario.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % M_FRAMES_PER_ACTION
         pass
 
     def draw(mario):
         if mario.direction ==1 :
-            mario.image.clip_draw(mario.frame*35, 0, 34, 26, mario.x, mario.y, 100, 100)
+            mario.image.clip_draw(int(mario.frame)*35, 0, 34, 26, mario.x, mario.y, 100, 100)
         else:
-            mario.image.clip_composite_draw(mario.frame * 35, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
+            mario.image.clip_composite_draw(int(mario.frame) * 35, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
         pass
 
 class Jump:
