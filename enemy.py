@@ -32,7 +32,7 @@ class Goomba:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.goomba.clip_draw(int(self.frame)*17, 0, 17, 16, screen_x, self.y, 50, 50)
-        print(f"Goomba Screen X: {screen_x}")
+        #print(f"Goomba Screen X: {screen_x}")
 
     def handle_event(self, event):
         pass
