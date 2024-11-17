@@ -10,12 +10,14 @@ def init():
     global end_image, mario_image, mario_sit, mario_jump
     global frame, end_mode
     global x, y
+    global get_mario_image
+    get_mario_image = Mario(play_mode.camera)
     frame, x, y = 0, 0, 0
     end_mode = 1
     end_image = load_image('resource/map/World-1.png')
-    mario_image = Mario().image
-    mario_sit = Mario().sit_image
-    mario_jump = Mario().jump_image
+    mario_image = get_mario_image.image
+    mario_sit = get_mario_image.sit_image
+    mario_jump = get_mario_image.jump_image
 def finish():
     global end_image
     del end_image

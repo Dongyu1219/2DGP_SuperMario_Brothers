@@ -10,11 +10,11 @@ class Camera:
         self.direction = 0
 
     def update(self):
-        self.x += self.direction *RUN_SPEED_PPS * game_framework.frame_time
+        self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time
         if self.x < 0.0:
             self.x = 0.0
-        elif self.x > 1180.0 :  # 맵의 오른쪽 경계에 도달
-            self.x = 1180.0
+        elif self.x > 1100 * 800/ 320:  # 맵의 오른쪽 경계에 도달
+            self.x = 1100.0* 800/320
             game_framework.change_mode(ending_mode)
         #print(f"Camera X: {self.x}")
     def handle_events(self, event):

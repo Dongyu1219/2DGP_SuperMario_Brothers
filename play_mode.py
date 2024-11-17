@@ -29,7 +29,7 @@ def handle_events():
 def init():
     global mario
     global map
-    global goomba1, goomba2
+    global goomba, goomba2
     global flower
     global camera
 
@@ -38,14 +38,18 @@ def init():
     map = Map_1(camera)
     game_world.add_object(map, 0)
 
-    goomba1 = Goomba(camera)
-    game_world.add_object(goomba1, 1)
+    goomba = Goomba(camera)
+    game_world.add_object(goomba, 1)
 
     flower = Flower(camera)
     game_world.add_object(flower, 1)
 
-    mario = Mario()
+    mario = Mario(camera)
     game_world.add_object(mario, 1)
+
+    game_world.add_collision_pair('mario:goomba', mario, None)
+    game_world.add_collision_pair('mario:goomba', None, goomba)
+
 
 def finish():
     game_world.clear()
@@ -54,7 +58,9 @@ def finish():
 def update():
     camera.update()
     game_world.update()
-
+    game_world.handle_collisions()
+    if game_world.collide(mario, goomba):
+        print("COLLISION mario:goomba")
 
 def draw():
 

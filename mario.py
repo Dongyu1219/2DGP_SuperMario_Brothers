@@ -1,14 +1,16 @@
-from pico2d import load_image, get_time
-from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION
+from pico2d import load_image, get_time, draw_rectangle
+from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
 from state_machine import *
 from map import *
 
 class Mario:
-    def __init__(self):
+    def __init__(self, camera):
             self.x, self.y = 100, 126
+            self.world_x = 0
             self.frame = 0
             self.direction = 0
+            self.camera = camera
             self.image = load_image('resource/mario/small_mario_runningsheet.png')
             self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
             self.jump_image = load_image('resource/mario/small_mario_jump_image.png')
@@ -26,7 +28,8 @@ class Mario:
 
     def update(self):
         self.state_machine.update()
-        #self.frame = (self.frame+1) %4
+        self.world_x = self.x + self.camera.x
+        print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")
         pass
 
     def handle_event(self, event):
@@ -39,6 +42,28 @@ class Mario:
     def draw(self):
             self.state_machine.draw()
             #self.mario.clip_draw(self.frame*35, 0, 34, 26, self.x, self.y, 100, 100)
+            draw_rectangle(*self.get_bb_draw())
+
+    def get_bb(self):
+        # fill here
+        # 네 개의 값, x1, y1, x2, y2
+        return self.world_x-20, self.y-50, self.world_x + 20, self.y + 20
+
+    def get_bb_draw(self):
+        # fill here
+        # 네 개의 값, x1, y1, x2, y2
+        return self.x-20, self.y-50, self.x + 20, self.y + 20
+
+    def handle_collision(self, group, other):
+        # if group == 'boy:ball':
+        #     self.ball_count += 1
+        #     #여기서도 없앨 수 있음
+        #     #그러나 교수님은 스스로 없애는 것을 추천
+        #     #game_world.remove_object(other)
+        if group == 'mario:goomba':
+            print("collision")
+            game_framework.quit()
+        pass
 
 
 class Idle:
@@ -79,8 +104,8 @@ class Run:
     @staticmethod
     def do(mario):
         #
-        # if mario.x< 200:
-        #     mario.x += mario.direction*3
+        if mario.x< 200:
+            mario.x += mario.direction * RUN_SPEED_PPS//2 * game_framework.frame_time
         mario.frame = (mario.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % M_FRAMES_PER_ACTION
         pass
 
