@@ -39,7 +39,7 @@ def update():
             end_mode = 1
             x = 240
     elif x >= 240 and x < 440:
-        x += 0.2
+        x += 0.3
     elif x > 440:
         end_mode = 5
 
