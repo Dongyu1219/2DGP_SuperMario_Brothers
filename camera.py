@@ -7,6 +7,8 @@ from numbers import RUN_SPEED_PPS
 class Camera:
     def __init__(self):
         self.x = 0
+        #디버경
+        #self.x = 2200
         self.direction = 0
 
     def update(self):

@@ -12,6 +12,9 @@ class Mario:
             self.direction = 0
             self.camera = camera
 
+            self.velocity_y = 0  # 중력을 반영한 수직 속도
+            self.is_grounded = False  # 블록 위에 있는 상태
+
             self.image = load_image('resource/mario/small_mario_runningsheet.png')
             self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
             self.jump_image = load_image('resource/mario/small_mario_jump_image.png')
@@ -30,7 +33,16 @@ class Mario:
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
-        #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")
+        print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")
+        #낙하처리
+        if not self.is_grounded:
+            self.velocity_y -= 1  # 중력 가속도
+        self.y += self.velocity_y
+        # 바닥에 닿으면 멈춤
+        if self.y <= 126:
+            self.y = 126
+            self.velocity_y = 0
+            self.is_grounded = True
         pass
 
     def handle_event(self, event):
@@ -60,21 +72,20 @@ class Mario:
         if group == 'mario:pipe':
             o_left, o_bottom, o_right, o_top = other.get_bb()
 
-            overlap_top = top - o_top
-            overlap_bottom = o_bottom - bottom
-            overlap_left = o_left - left
-            overlap_right = right - o_right
+            # 충돌 방향 판별
+            if bottom < o_top < top:  # 아래에서 블록 위로 충돌
+                self.y = o_top
+                self.velocity_y = 0
+                self.is_grounded = True
+            elif top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
+                self.y = o_bottom - (top - bottom)
+                self.velocity_y = -1  # 반발력
 
-            # 가장 작은 겹치는 방향으로 위치 고정
-            if min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_top:
-                self.y = o_top + 20
-                self.jump_speed = 0  # 점프 멈춤
-            elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_bottom:
-                self.y = o_bottom - 20
-            elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_left:
-                self.world_x = o_left - 20
-            elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_right:
-                self.world_x = o_right + 20
+            # 수평 충돌 처리
+            if right > o_left > left:  # 오른쪽 블록과 충돌
+                self.world_x = o_left - (right - left)
+            elif left < o_right < right:  # 왼쪽 블록과 충돌
+                self.world_x = o_right + (right - left)
                 
         if group == 'mario:goomba':
             print("collision")
@@ -136,9 +147,8 @@ class Jump:
     def enter(mario, e):
         #print('Mario Jump Enter')
         if up_down(e):
-            mario.jump_start_y = mario.y
-            mario.jump_speed = 20
-            pass
+            mario.velocity_y = 25
+            mario.is_grounded = False
 
     @staticmethod
     def exit(mario, e):
@@ -147,11 +157,8 @@ class Jump:
 
     @staticmethod
     def do(mario):
-        mario.y += mario.jump_speed
-        mario.jump_speed -=1
-        if mario.y <= mario.jump_start_y:
-            mario.y = mario.jump_start_y
-            mario.state_machine.add_event(('JUMP_DOWN', 0))
+        if mario.is_grounded:
+            mario.state_machine.add_event(('JUMP_DOWN', 0))  # 바닥에 닿으면 Idle 상태로 복귀
 
     def draw(mario):
         if mario.direction ==1 :

@@ -22,10 +22,10 @@ class StateMachine:
     def handle_event(self, e):
         for event, next_state in self.set_transitions[self.cur_state].items():
             if event(e):
-                #print(f'Exit from {self.cur_state}')
+                print(f'Exit from {self.cur_state}')
                 self.cur_state.exit(self.obj, e)
                 self.cur_state = next_state
-                #print(f'Enter into {self.cur_state}')
+                print(f'Enter into {self.cur_state}')
                 self.cur_state.enter(self.obj, e)
                 return
 

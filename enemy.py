@@ -8,7 +8,7 @@ from numbers import ACTION_PER_TIME, FRAMES_PER_ACTION, RUN_SPEED_PPS
 
 class Goomba:
     def __init__(self, camera):
-        self.x, self.y = 2000, 105
+        self.x, self.y = 1800, 105
         self.frame = 0
         self.direction = 1
         self.goomba = load_image('resource/enemy/ground_enemies.png')
@@ -19,9 +19,9 @@ class Goomba:
 
         self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time *2
 
-        if self.x >= 2500:  # 오른쪽 경계
+        if self.x >= 2000:  # 오른쪽 경계
             self.direction = -1  # 왼쪽으로 이동
-        elif self.x <= 1800:  # 왼쪽 경계
+        elif self.x <= 1500:  # 왼쪽 경계
             self.direction = 1  # 오른쪽으로 이동
 
     def draw(self):
