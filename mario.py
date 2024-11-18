@@ -11,6 +11,7 @@ class Mario:
             self.frame = 0
             self.direction = 0
             self.camera = camera
+
             self.image = load_image('resource/mario/small_mario_runningsheet.png')
             self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
             self.jump_image = load_image('resource/mario/small_mario_jump_image.png')
@@ -57,24 +58,23 @@ class Mario:
     def handle_collision(self, group, other):
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
         if group == 'mario:pipe':
-            pass
-            # o_left, o_bottom, o_right, o_top = other.get_bb()
-            #
-            # overlap_top = top - o_top
-            # overlap_bottom = o_bottom - bottom
-            # overlap_left = o_left - left
-            # overlap_right = right - o_right
-            #
-            # # 가장 작은 겹치는 방향으로 위치 고정
-            # if min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_top:
-            #     self.y = o_top + 20
-            #     self.jump_speed = 0  # 점프 멈춤
-            # elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_bottom:
-            #     self.y = o_bottom - 20
-            # elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_left:
-            #     self.world_x = o_left - 20
-            # elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_right:
-            #     self.world_x = o_right + 20
+            o_left, o_bottom, o_right, o_top = other.get_bb()
+
+            overlap_top = top - o_top
+            overlap_bottom = o_bottom - bottom
+            overlap_left = o_left - left
+            overlap_right = right - o_right
+
+            # 가장 작은 겹치는 방향으로 위치 고정
+            if min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_top:
+                self.y = o_top + 20
+                self.jump_speed = 0  # 점프 멈춤
+            elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_bottom:
+                self.y = o_bottom - 20
+            elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_left:
+                self.world_x = o_left - 20
+            elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_right:
+                self.world_x = o_right + 20
                 
         if group == 'mario:goomba':
             print("collision")
