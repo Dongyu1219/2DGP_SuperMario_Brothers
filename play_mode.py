@@ -1,5 +1,6 @@
 from pico2d import *
 
+from block import Pipe
 from camera import Camera
 from map import Map_1
 from mario import Mario
@@ -28,8 +29,8 @@ def handle_events():
 
 def init():
     global mario
-    global map
-    global goomba, goomba2
+    global map, pipe_house
+    global goomba
     global flower
     global camera
 
@@ -47,9 +48,13 @@ def init():
     mario = Mario(camera)
     game_world.add_object(mario, 1)
 
+    pipe_house = Pipe(865, 110, camera)
+    game_world.add_object(pipe_house, 2)
+
     game_world.add_collision_pair('mario:goomba', mario, None)
     game_world.add_collision_pair('mario:goomba', None, goomba)
-
+    game_world.add_collision_pair('mario:goomba', None, flower)
+    game_world.add_collision_pair('mario:pipe', mario, pipe_house)
 
 def finish():
     game_world.clear()

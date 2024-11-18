@@ -29,7 +29,7 @@ class Mario:
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
-        print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")
+        #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")
         pass
 
     def handle_event(self, event):
@@ -55,15 +55,30 @@ class Mario:
         return self.x-20, self.y-50, self.x + 20, self.y + 20
 
     def handle_collision(self, group, other):
-        # if group == 'boy:ball':
-        #     self.ball_count += 1
-        #     #여기서도 없앨 수 있음
-        #     #그러나 교수님은 스스로 없애는 것을 추천
-        #     #game_world.remove_object(other)
+        left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
+        if group == 'mario:pipe':
+            pass
+            # o_left, o_bottom, o_right, o_top = other.get_bb()
+            #
+            # overlap_top = top - o_top
+            # overlap_bottom = o_bottom - bottom
+            # overlap_left = o_left - left
+            # overlap_right = right - o_right
+            #
+            # # 가장 작은 겹치는 방향으로 위치 고정
+            # if min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_top:
+            #     self.y = o_top + 20
+            #     self.jump_speed = 0  # 점프 멈춤
+            # elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_bottom:
+            #     self.y = o_bottom - 20
+            # elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_left:
+            #     self.world_x = o_left - 20
+            # elif min(overlap_top, overlap_bottom, overlap_left, overlap_right) == overlap_right:
+            #     self.world_x = o_right + 20
+                
         if group == 'mario:goomba':
             print("collision")
             game_framework.quit()
-        pass
 
 
 class Idle:
@@ -122,7 +137,7 @@ class Jump:
         #print('Mario Jump Enter')
         if up_down(e):
             mario.jump_start_y = mario.y
-            mario.jump_speed = 15
+            mario.jump_speed = 20
             pass
 
     @staticmethod

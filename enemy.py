@@ -1,4 +1,6 @@
 from pico2d import load_image, draw_rectangle
+from pygame.time import delay
+
 import game_framework
 import game_world
 from numbers import ACTION_PER_TIME, FRAMES_PER_ACTION, RUN_SPEED_PPS
@@ -25,7 +27,7 @@ class Goomba:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.goomba.clip_draw(int(self.frame)*17, 0, 17, 16, screen_x, self.y, 50, 50)
-        print(f"Goomba: World X = {self.x}, Screen X = {screen_x}, Y = {self.y}")
+        #print(f"Goomba: World X = {self.x}, Screen X = {screen_x}, Y = {self.y}")
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
@@ -47,20 +49,48 @@ class Flower:
     def __init__(self, camera):
         self.x, self.y = 880, 225
         self.frame = 0
-        self.goomba = load_image('resource/enemy/flower_enemies.png')
+        self.flower_image = load_image('resource/enemy/flower_enemies.png')
         self.camera = camera
+        self.direction = 1
+        self.max_y = 225  # 최고점
+        self.min_y = 120  # 최저점
+        self.time_elapsed = 0  # 타이머 변수
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+        self.time_elapsed += game_framework.frame_time
+
+        if self.direction == 1 and self.y >= self.max_y:  #
+            if self.time_elapsed > 0.5:  # 0.5초 대기 후
+                self.direction = -1
+                self.time_elapsed = 0
+
+        elif self.direction == -1 and self.y <= self.min_y:
+            if self.time_elapsed > 0.5:  # 0.5초 대기 후
+                self.direction = 1
+                self.time_elapsed = 0
+
+            # y 위치 업데이트
+        self.y += self.direction * RUN_SPEED_PPS//6 * game_framework.frame_time
         pass
 
     def draw(self):
         screen_x = self.x - self.camera.x
-        self.goomba.clip_draw(int(self.frame)*17, 0, 17, 24, screen_x, self.y, 50, 50)
-        #print(f"Flower Screen X: {screen_x}")
+        self.flower_image.clip_draw(int(self.frame)*17, 0, 17, 24, screen_x, self.y, 50, 50)
+
+        left, bottom, right, top = self.get_bb()
+        screen_left = left - self.camera.x
+        screen_right = right - self.camera.x
+        draw_rectangle(screen_left, bottom, screen_right, top)
 
     def handle_event(self, event):
         pass
 
 
+    def get_bb(self):
+        return self.x - 30, self.y -60, self.x + 30, self.y +30
 
+    def handle_collision(self, group, other):
+        if group == 'mario:goomba':
+            print("Mario and Goomba collided!")
+            game_world.remove_object(self)
