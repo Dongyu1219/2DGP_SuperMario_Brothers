@@ -59,3 +59,32 @@ class Wall:
 
         def update(self):
             pass
+
+
+class Block:
+    def __init__(self, x, y, camera):
+        self.x, self.y = x, y
+        self.width, self.height = 20, 20
+        self.camera = camera
+        # self.image = load_image('resource/block/pipe_house.png')
+
+    def get_bb(self):
+        # 세계 좌표 기준의 충돌 박스
+        return self.x-self.width, self.y-self.height, self.x + self.width, self.y + self.width
+
+    def draw(self):
+        # 화면 좌표로 변환 후 그리기
+        screen_x = self.x - self.camera.x
+
+        left = screen_x - self.width
+        bottom = self.y - self.height
+        right = screen_x  + self.width
+        top = self.y +  + self.height
+        draw_rectangle(left, bottom, right, top)
+        # draw_rectangle(*self.get_bb())
+
+    def handle_collision(self, group, other):
+        pass
+
+    def update(self):
+        pass
