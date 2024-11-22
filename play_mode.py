@@ -11,7 +11,7 @@ from enemy import Goomba, Flower
 
 #import item_mode
 
-camera = None
+#camera = None
 
 def handle_events():
     events = get_events()

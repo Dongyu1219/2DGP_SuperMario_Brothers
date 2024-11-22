@@ -8,7 +8,7 @@ class Map_1:
         pass
 
     def handle_events(self, event):
-            pass
+        pass
 
     def draw(self):
         #global camera

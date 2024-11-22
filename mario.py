@@ -2,6 +2,7 @@ from pico2d import load_image, get_time, draw_rectangle
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
 from state_machine import *
+
 from map import *
 
 class Mario:
@@ -70,7 +71,8 @@ class Mario:
 
     def handle_collision(self, group, other):
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
-        o_left, o_bottom, o_right, o_top = other.get_bb()
+        o_left, o_bottom, o_right, o_top = other.get_bb_draw()
+        #o_left, o_bottom, o_right, o_top = other.get_bb()
         if group == 'mario:block':
             # 충돌 방향 판별
             if bottom < o_top < top:  # 아래에서 블록 위로 충돌
@@ -98,12 +100,13 @@ class Mario:
             # 벽의 오른쪽과 충돌
             elif right > o_left > left:
                 self.world_x = o_left - (right - left)  # 위치 보정
-                print("Right collision with wall")
+                #print("Right collision with wall")
 
             # 벽의 왼쪽과 충돌
             elif left < o_right < right:
                 self.world_x = o_right + (right - left)  # 위치 보정
-                print("Left collision with wall")
+
+                #print("Left collision with wall")
 
         if group == 'mario:goomba':
             print("collision")
