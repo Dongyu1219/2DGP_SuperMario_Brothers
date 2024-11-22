@@ -36,6 +36,7 @@ def init():
     global camera
 
     camera = Camera()
+    game_world.add_object(camera, 0)
 
     map = Map_1(camera)
     game_world.add_object(map, 0)
@@ -66,7 +67,7 @@ def finish():
     pass
 
 def update():
-    camera.update()
+    #camera.update()
     game_world.update()
     game_world.handle_collisions()
     if game_world.collide(mario, goomba):
@@ -75,6 +76,7 @@ def update():
         print("BLOCK COLLIDE")
     if game_world.collide(mario, pipe_house):
         print("WALL COLLIDE")
+        #camera.stop_movement()
 
 def draw():
 

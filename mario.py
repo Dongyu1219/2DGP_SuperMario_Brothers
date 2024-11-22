@@ -71,7 +71,7 @@ class Mario:
 
     def handle_collision(self, group, other):
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
-        o_left, o_bottom, o_right, o_top = other.get_bb_draw()
+        o_left, o_bottom, o_right, o_top = other.get_bb()
         #o_left, o_bottom, o_right, o_top = other.get_bb()
         if group == 'mario:block':
             # 충돌 방향 판별
@@ -98,15 +98,24 @@ class Mario:
                     self.is_grounded = True
 
             # 벽의 오른쪽과 충돌
-            elif right > o_left > left:
-                self.world_x = o_left - (right - left)  # 위치 보정
-                #print("Right collision with wall")
+            if right > o_left - 30 > left:
+                self.world_x = o_left - (right - left) # 위치 보정
+                self.x = self.world_x - self.camera.x  # 로컬 좌표도
+                self.direction = 0
+                self.camera.stop_movement()
+                print("Left collision with wall")
+            else:
+                self.camera.resume_movement()
 
             # 벽의 왼쪽과 충돌
-            elif left < o_right < right:
+            if left < o_right+ 55 < right:
                 self.world_x = o_right + (right - left)  # 위치 보정
-
-                #print("Left collision with wall")
+                self.x = self.world_x - self.camera.x  # 로컬 좌표도 업데이트
+                self.direction = 0
+                self.camera.stop_movement()
+                print("Right collision with wall")
+            else:
+                self.camera.resume_movement()
 
         if group == 'mario:goomba':
             print("collision")

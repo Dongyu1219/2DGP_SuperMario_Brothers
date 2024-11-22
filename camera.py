@@ -12,6 +12,7 @@ class Camera:
         self.move = True
 
     def update(self):
+        print(self.move)
         if self.move:
             self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time
             if self.x < 0.0:
@@ -19,6 +20,7 @@ class Camera:
             elif self.x > 1100 * 800/ 320:  # 맵의 오른쪽 경계에 도달
                 self.x = 1100.0* 800/320
                 game_framework.change_mode(ending_mode)
+
         #print(f"Camera X: {self.x}")
     def handle_events(self, event):
         if event.type == SDL_KEYDOWN:
@@ -33,7 +35,16 @@ class Camera:
     def stop_movement(self):
         """카메라 이동을 멈춤"""
         self.move = False
+        self.direction = 0
 
     def resume_movement(self):
         """카메라 이동을 재개"""
         self.move = True
+
+    def draw(self):
+        pass
+
+    # def handle_collision(self, group, other):
+    #     if group == 'mario:wall':
+    #         #self.move = False
+    #         #self.stop_movement()
