@@ -70,7 +70,7 @@ class Mario:
 
     def handle_collision(self, group, other):
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
-        o_left, o_bottom, o_right, o_top = other.get_bb_draw()
+        o_left, o_bottom, o_right, o_top = other.get_bb()
         if group == 'mario:block':
             # 충돌 방향 판별
             if bottom < o_top < top:  # 아래에서 블록 위로 충돌
@@ -107,7 +107,7 @@ class Mario:
 
         if group == 'mario:goomba':
             print("collision")
-            game_framework.quit()
+            #game_framework.quit()
 
 
 class Idle:
@@ -148,7 +148,7 @@ class Run:
     @staticmethod
     def do(mario):
         #
-        if mario.x< 200:
+        if mario.x< 250:
             mario.x += mario.direction * RUN_SPEED_PPS//2 * game_framework.frame_time
         mario.frame = (mario.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % M_FRAMES_PER_ACTION
         pass
