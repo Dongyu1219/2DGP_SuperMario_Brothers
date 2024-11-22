@@ -57,8 +57,9 @@ def init():
 
     game_world.add_collision_pair('mario:goomba', mario, None)
     game_world.add_collision_pair('mario:goomba', None, goomba)
-    game_world.add_collision_pair('mario:goomba', None, flower)
-    game_world.add_collision_pair('mario:pipe', mario, pipe_house)
+    #game_world.add_collision_pair('mario:goomba', None, flower)
+    game_world.add_collision_pair('mario:block', mario, block)
+    game_world.add_collision_pair('mario:wall', mario, pipe_house)
 
 def finish():
     game_world.clear()
@@ -70,6 +71,10 @@ def update():
     game_world.handle_collisions()
     if game_world.collide(mario, goomba):
         print("COLLISION mario:goomba")
+    if game_world.collide(mario, block):
+        print("BLOCK COLLIDE")
+    if game_world.collide(mario, pipe_house):
+        print("WALL COLLIDE")
 
 def draw():
 

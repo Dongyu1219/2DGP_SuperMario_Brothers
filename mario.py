@@ -33,7 +33,7 @@ class Mario:
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
-        print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")
+        #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
         #낙하처리
         if not self.is_grounded:
             self.velocity_y -= 1  # 중력 가속도
@@ -43,7 +43,8 @@ class Mario:
             self.y = 126
             self.velocity_y = 0
             self.is_grounded = True
-        pass
+        else:
+            self.is_grounded = False  # 공중 상태로 전환
 
     def handle_event(self, event):
         #튜플을 이용해서 이벤트 상태 나타내기
@@ -65,28 +66,45 @@ class Mario:
     def get_bb_draw(self):
         # fill here
         # 네 개의 값, x1, y1, x2, y2
-        return self.x-20, self.y-50, self.x + 20, self.y + 20
+        return self.x-20, self.y-45, self.x + 20, self.y + 20
 
     def handle_collision(self, group, other):
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
-        if group == 'mario:pipe':
-            o_left, o_bottom, o_right, o_top = other.get_bb()
-
+        o_left, o_bottom, o_right, o_top = other.get_bb_draw()
+        if group == 'mario:block':
             # 충돌 방향 판별
             if bottom < o_top < top:  # 아래에서 블록 위로 충돌
-                self.y = o_top
+                self.y = o_top +45
                 self.velocity_y = 0
                 self.is_grounded = True
             elif top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
                 self.y = o_bottom - (top - bottom)
                 self.velocity_y = -1  # 반발력
-
             # 수평 충돌 처리
             if right > o_left > left:  # 오른쪽 블록과 충돌
                 self.world_x = o_left - (right - left)
             elif left < o_right < right:  # 왼쪽 블록과 충돌
                 self.world_x = o_right + (right - left)
-                
+
+        if group == 'mario:wall':
+            # 충돌 방향 판별
+            # 벽 위로 올라갈 때
+            if bottom < o_top < top and right > o_left and left < o_right:
+                if self.velocity_y <= 0:  # 떨어지는 중일 때만
+                    self.y = o_top + (top - bottom) // 2  # 위치 보정
+                    self.velocity_y = 0  # 중력 초기화
+                    self.is_grounded = True
+
+            # 벽의 오른쪽과 충돌
+            elif right > o_left > left:
+                self.world_x = o_left - (right - left)  # 위치 보정
+                print("Right collision with wall")
+
+            # 벽의 왼쪽과 충돌
+            elif left < o_right < right:
+                self.world_x = o_right + (right - left)  # 위치 보정
+                print("Left collision with wall")
+
         if group == 'mario:goomba':
             print("collision")
             game_framework.quit()
