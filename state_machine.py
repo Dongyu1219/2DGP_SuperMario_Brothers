@@ -96,3 +96,6 @@ def right_stop(e):
 
 def land(e):
     return e[0] == 'LAND'
+
+def die(e):
+    return e[0] == 'DIE'

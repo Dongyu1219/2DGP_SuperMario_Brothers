@@ -21,16 +21,18 @@ class Mario:
             self.image = load_image('resource/mario/small_mario_runningsheet.png')
             self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
             self.jump_image = load_image('resource/mario/small_mario_jump_image.png')
+            self.die_image = load_image('resource/mario/small_mario_die_image.png')
             self.state_machine = StateMachine(self)
             self.state_machine.start(Idle)
             self.state_machine.set_transitions(
                 {
-                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle, left_stop : Idle, right_stop: Idle},
-                    Run: {right_down: Run, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, right_stop : Right_Stop, left_stop : Left_Stop},
-                    Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
-                    Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump},
+                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle, left_stop : Idle, right_stop: Idle, die: Die},
+                    Run: {right_down: Run, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, right_stop : Right_Stop, left_stop : Left_Stop, die: Die},
+                    Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle, die: Die},
+                    Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump, die: Die},
                     Left_Stop : {right_down: Run, left_down: Left_Stop, left_up: Left_Stop, right_up: Run, up_down : Jump, jump_down : Idle},
-                    Right_Stop : {right_down: Right_Stop, left_down: Run, left_up: Run, right_up: Right_Stop, up_down : Jump, jump_down : Idle}
+                    Right_Stop : {right_down: Right_Stop, left_down: Run, left_up: Run, right_up: Right_Stop, up_down : Jump, jump_down : Idle},
+                    Die : {die : Die}
                 }
             )
 
@@ -94,6 +96,20 @@ class Mario:
             elif left < o_right < right:  # 왼쪽 블록과 충돌
                 self.world_x = o_right + (right - left)
 
+        if group == 'mario:item_block':
+            if bottom < o_top < top:
+                self.y = o_top +45
+                self.velocity_y = 0
+                self.is_grounded = True
+            elif top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
+                self.y = o_bottom - (top - bottom)
+                self.velocity_y = -1  # 반발력
+            # 수평 충돌 처리
+            if right > o_left > left:  # 오른쪽 블록과 충돌
+                self.world_x = o_left - (right - left)
+            elif left < o_right < right:  # 왼쪽 블록과 충돌
+                self.world_x = o_right + (right - left)
+
         if group == 'mario:wall':
             # 충돌 방향 판별
             # 벽 위로 올라갈 때
@@ -122,7 +138,28 @@ class Mario:
 
         if group == 'mario:goomba':
             print("collision")
+            self.state_machine.add_event(('DIE', 0))
             #game_framework.quit()
+
+
+class Die:
+    @staticmethod
+    def enter(mario, e):
+        # print('Mario Sleep Enter')
+        pass
+
+    @staticmethod
+    def exit(mario, e):
+        # print('Mario Sleep Exit')
+        pass
+
+    @staticmethod
+    def do(mario):
+        pass
+
+    def draw(mario):
+        mario.die_image.draw(mario.x, mario.y, 100, 70)
+        pass
 
 
 class Idle:

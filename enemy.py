@@ -43,7 +43,7 @@ class Goomba:
     def handle_collision(self, group, other):
         if group == 'mario:goomba':
             print("Mario and Goomba collided!")
-            game_world.remove_object(self)
+            #game_world.remove_object(self)
 
 class Flower:
     def __init__(self, x, y, camera):
@@ -93,4 +93,4 @@ class Flower:
     def handle_collision(self, group, other):
         if group == 'mario:goomba':
             print("Mario and Goomba collided!")
-            game_world.remove_object(self)
+            #game_world.remove_object(self)
