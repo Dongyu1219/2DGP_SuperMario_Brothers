@@ -17,7 +17,7 @@ class Block:
         left = screen_x - self.width
         bottom = self.y - self.height
         right = screen_x + self.width
-        top = self.y + + self.height
+        top = self.y + self.height
         return left, bottom, right, top
 
     def draw(self):
@@ -34,20 +34,20 @@ class Block:
 class Pipe:
     def __init__(self, x, y, camera):
         self.x, self.y = x, y
-        self.width, self.height = 32, 63
+        self.width, self.height = 45, 120
         self.camera = camera
         self.image = load_image('resource/block/pipe_house.png')  # 블록 이미지 경로
 
     def get_bb(self):
         # 세계 좌표 기준의 충돌 박스
-        return self.x, self.y, self.x + 30, self.y + 60
+        return self.x - self.width//2 , self.y - self.width , self.x + self.width+15, self.y + self.height
 
     def get_bb_draw(self):
         screen_x = self.x - self.camera.x
-        left = screen_x - self.width // 2 - 10
-        bottom = self.y - self.height // 2
-        right = screen_x + 80 - self.width // 2
-        top = self.y + 120 - self.height // 2
+        left = screen_x - self.width//2
+        bottom = self.y - self.height
+        right = screen_x + self.width+15
+        top = self.y  + self.height
         return left, bottom, right, top
 
     def draw(self):

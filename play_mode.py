@@ -44,13 +44,13 @@ def init():
     goomba = Goomba(camera)
     game_world.add_object(goomba, 1)
 
-    flower = Flower(camera)
+    flower = Flower(885, 225, camera)
     game_world.add_object(flower, 1)
 
     mario = Mario(camera)
     game_world.add_object(mario, 1)
 
-    pipe_house = Pipe(865, 110, camera)
+    pipe_house = Pipe(865, 80, camera)
     game_world.add_object(pipe_house, 2)
 
     block = Block(1020, 220, camera)

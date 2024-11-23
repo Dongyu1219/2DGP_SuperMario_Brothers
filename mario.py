@@ -77,7 +77,7 @@ class Mario:
     def handle_collision(self, group, other):
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
         o_left, o_bottom, o_right, o_top = other.get_bb()
-        #o_left, o_bottom, o_right, o_top = other.get_bb()
+        #o_left, o_bottom, o_right, o_top = other.get_bb_draw()
         if group == 'mario:block':
             # 충돌 방향 판별
             if bottom < o_top < top:  # 아래에서 블록 위로 충돌
@@ -96,25 +96,26 @@ class Mario:
         if group == 'mario:wall':
             # 충돌 방향 판별
             # 벽 위로 올라갈 때
-            if bottom < o_top < top and right > o_left and left < o_right:
-                if self.velocity_y <= 0:  # 떨어지는 중일 때만
-                    self.y = o_top + (top - bottom) // 2  # 위치 보정
+            if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10:
+                if self.velocity_y <= 0:  # 낙하 중일 때만
+                    self.y = o_top+40  # Mario의 y 위치를 벽의 상단으로 고정
                     self.velocity_y = 0  # 중력 초기화
                     self.is_grounded = True
+                return
 
             # 벽의 왼쪽과 충돌
-            if right > o_left  > left:
-                self.world_x = o_left - (right - left) # 위치 보정
+            if right > o_left+10  > left:
+                self.world_x = o_left+10 - (right - left) # 위치 보정
                 self.x = self.world_x - self.camera.x  # 로컬 좌표도
                 self.state_machine.add_event(('RIGHT_STOP', 0))
                 print("Right collision with wall")
 
 
             # 벽의 오른쪽과 충돌
-            if left < o_right < right:
-                self.world_x = o_right + (right - left)  # 위치 보정
+            if left < o_right-10 < right:
+                self.world_x = o_right-10 + (right - left)  # 위치 보정
                 self.x = self.world_x - self.camera.x  # 로컬 좌표도 업데이트
-                self.state_machine.add_event(('LEFT_Stop', 0))
+                self.state_machine.add_event(('LEFT_STOP', 0))
                 print("Left collision with wall")
 
 
@@ -154,7 +155,7 @@ class Left_Stop:
         pass
     @staticmethod
     def exit(mario, e):
-        mario.resume_movement()
+        mario.camera.resume_movement()
         print('Mario Stop Exit')
     @staticmethod
     def do(mario):

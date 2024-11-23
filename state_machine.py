@@ -93,3 +93,6 @@ def left_stop(e):
 
 def right_stop(e):
     return e[0] == 'RIGHT_STOP'
+
+def land(e):
+    return e[0] == 'LAND'

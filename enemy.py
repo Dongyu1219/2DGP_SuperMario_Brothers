@@ -46,8 +46,8 @@ class Goomba:
             game_world.remove_object(self)
 
 class Flower:
-    def __init__(self, camera):
-        self.x, self.y = 880, 225
+    def __init__(self, x, y, camera):
+        self.x, self.y = x, y
         self.frame = 0
         self.flower_image = load_image('resource/enemy/flower_enemies.png')
         self.camera = camera
