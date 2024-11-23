@@ -31,6 +31,69 @@ class Block:
     def update(self):
         pass
 
+class Iteam_Block:
+    def __init__(self, x, y, camera):
+        self.x, self.y = x, y
+        self.width, self.height = 20, 20
+        self.camera = camera
+        self.image = load_image('resource/block/pipe_house.png')  # 블록 이미지 경로
+
+    def get_bb(self):
+        # 세계 좌표 기준의 충돌 박스
+        return self.x-self.width, self.y-self.height, self.x + self.width, self.y + self.width
+
+    def get_bb_draw(self):
+        #카메라 좌표를 고려해서 충돌박스 그리기
+        screen_x = self.x - self.camera.x
+
+        left = screen_x - self.width
+        bottom = self.y - self.height
+        right = screen_x + self.width
+        top = self.y + self.height
+        return left, bottom, right, top
+
+    def draw(self):
+        # 화면 좌표로 변환 후 그리기
+        draw_rectangle(*self.get_bb_draw())
+        #draw_rectangle(*self.get_bb())
+
+    def handle_collision(self, group, other):
+        pass
+
+    def update(self):
+        pass
+
+class Break_Block:
+    def __init__(self, x, y, camera):
+        self.x, self.y = x, y
+        self.width, self.height = 20, 20
+        self.camera = camera
+
+    def get_bb(self):
+        # 세계 좌표 기준의 충돌 박스
+        return self.x-self.width, self.y-self.height, self.x + self.width, self.y + self.width
+
+    def get_bb_draw(self):
+        #카메라 좌표를 고려해서 충돌박스 그리기
+        screen_x = self.x - self.camera.x
+
+        left = screen_x - self.width
+        bottom = self.y - self.height
+        right = screen_x + self.width
+        top = self.y + self.height
+        return left, bottom, right, top
+
+    def draw(self):
+        # 화면 좌표로 변환 후 그리기
+        draw_rectangle(*self.get_bb_draw())
+        #draw_rectangle(*self.get_bb())
+
+    def handle_collision(self, group, other):
+        pass
+
+    def update(self):
+        pass
+
 class Pipe:
     def __init__(self, x, y, camera):
         self.x, self.y = x, y
