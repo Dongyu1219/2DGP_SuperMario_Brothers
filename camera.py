@@ -12,7 +12,6 @@ class Camera:
         self.move = True
 
     def update(self):
-        print(self.move)
         if self.move:
             self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time
             if self.x < 0.0:

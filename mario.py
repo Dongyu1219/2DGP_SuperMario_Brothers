@@ -1,9 +1,12 @@
+from asyncio import Runner
+
 from pico2d import load_image, get_time, draw_rectangle
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
 from state_machine import *
 
 from map import *
+
 
 class Mario:
     def __init__(self, camera):
@@ -23,10 +26,12 @@ class Mario:
             self.state_machine.start(Idle)
             self.state_machine.set_transitions(
                 {
-                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle},
-                    Run: {right_down: Run, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump},
+                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle, left_stop : Idle, right_stop: Idle},
+                    Run: {right_down: Run, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, right_stop : Right_Stop, left_stop : Left_Stop},
                     Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
-                    Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump}
+                    Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump},
+                    Left_Stop : {right_down: Run, left_down: Left_Stop, left_up: Left_Stop, right_up: Run, up_down : Jump, jump_down : Idle},
+                    Right_Stop : {right_down: Right_Stop, left_down: Run, left_up: Run, right_up: Right_Stop, up_down : Jump, jump_down : Idle}
                 }
             )
 
@@ -97,25 +102,21 @@ class Mario:
                     self.velocity_y = 0  # 중력 초기화
                     self.is_grounded = True
 
-            # 벽의 오른쪽과 충돌
-            if right > o_left - 30 > left:
+            # 벽의 왼쪽과 충돌
+            if right > o_left  > left:
                 self.world_x = o_left - (right - left) # 위치 보정
                 self.x = self.world_x - self.camera.x  # 로컬 좌표도
-                self.direction = 0
-                self.camera.stop_movement()
-                print("Left collision with wall")
-            else:
-                self.camera.resume_movement()
+                self.state_machine.add_event(('RIGHT_STOP', 0))
+                print("Right collision with wall")
 
-            # 벽의 왼쪽과 충돌
-            if left < o_right+ 55 < right:
+
+            # 벽의 오른쪽과 충돌
+            if left < o_right < right:
                 self.world_x = o_right + (right - left)  # 위치 보정
                 self.x = self.world_x - self.camera.x  # 로컬 좌표도 업데이트
-                self.direction = 0
-                self.camera.stop_movement()
-                print("Right collision with wall")
-            else:
-                self.camera.resume_movement()
+                self.state_machine.add_event(('LEFT_Stop', 0))
+                print("Left collision with wall")
+
 
         if group == 'mario:goomba':
             print("collision")
@@ -127,6 +128,7 @@ class Idle:
     def enter(mario,e):
         #print('Mario Idle Enter')
         mario.wait_time = get_time()
+        mario.camera.stop_movement()
     @staticmethod
     def exit(mario, e):
         #print('Boy Idle Exit')
@@ -142,10 +144,47 @@ class Idle:
         else:
             mario.image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
 
+
+class Left_Stop:
+    @staticmethod
+    def enter(mario,e):
+        mario.direction = -1
+        mario.camera.stop_movement()
+        print('Mario Left_Stop Enter')
+        pass
+    @staticmethod
+    def exit(mario, e):
+        mario.resume_movement()
+        print('Mario Stop Exit')
+    @staticmethod
+    def do(mario):
+        pass
+    def draw(mario):
+        mario.image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
+
+class Right_Stop:
+    @staticmethod
+    def enter(mario,e):
+        mario.direction = 0
+        mario.camera.stop_movement()
+        print('Mario Right_Stop Enter')
+        pass
+    @staticmethod
+    def exit(mario, e):
+        mario.camera.resume_movement()
+        print('Mario Stop Exit')
+    @staticmethod
+    def do(mario):
+        pass
+    def draw(mario):
+        mario.image.clip_draw(0, 0, 34, 26, mario.x, mario.y, 100, 100)
+
+
 class Run:
     @staticmethod
     def enter(mario, e):
         #print('Mario Run Enter')
+        mario.camera.resume_movement()
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             mario.direction = 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
@@ -171,6 +210,7 @@ class Run:
         else:
             mario.image.clip_composite_draw(int(mario.frame) * 35, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
         pass
+
 
 class Jump:
     @staticmethod
