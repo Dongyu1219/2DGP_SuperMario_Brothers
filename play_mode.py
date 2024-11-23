@@ -29,9 +29,10 @@ def handle_events():
 
 def init():
     global mario
-    global map, pipe_house
+    global map
+    global pipe_house1, pipe_house2, pipe_house3
     global goomba
-    global flower
+    global flower1, flower2, flower3
     global block
     global camera
 
@@ -44,23 +45,40 @@ def init():
     goomba = Goomba(camera)
     game_world.add_object(goomba, 1)
 
-    flower = Flower(885, 225, camera)
-    game_world.add_object(flower, 1)
+    flower1 = Flower(885, 225, camera)
+    game_world.add_object(flower1, 1)
+
+    pipe_house1 = Pipe(865, 80, camera)
+    game_world.add_object(pipe_house1, 2)
 
     mario = Mario(camera)
     game_world.add_object(mario, 1)
 
-    pipe_house = Pipe(865, 80, camera)
-    game_world.add_object(pipe_house, 2)
-
     block = Block(1020, 220, camera)
     game_world.add_object(block, 2)
 
+    flower2 = Flower(2200, 225, camera)
+    game_world.add_object(flower2, 1)
+    pipe_house2 = Pipe(2180, 80, camera)
+    game_world.add_object(pipe_house2, 2)
+
+    flower3 = Flower(2400, 225, camera)
+    game_world.add_object(flower3, 1)
+    pipe_house3 = Pipe(2380, 80, camera)
+    game_world.add_object(pipe_house3, 2)
+
     game_world.add_collision_pair('mario:goomba', mario, None)
     game_world.add_collision_pair('mario:goomba', None, goomba)
-    #game_world.add_collision_pair('mario:goomba', None, flower)
+
+    game_world.add_collision_pair('mario:goomba', None, flower1)
+    game_world.add_collision_pair('mario:goomba', None, flower2)
+    game_world.add_collision_pair('mario:goomba', None, flower3)
+    game_world.add_collision_pair('mario:wall', mario, pipe_house1)
+    game_world.add_collision_pair('mario:wall', mario, pipe_house2)
+    game_world.add_collision_pair('mario:wall', mario, pipe_house3)
+
     game_world.add_collision_pair('mario:block', mario, block)
-    game_world.add_collision_pair('mario:wall', mario, pipe_house)
+
 
 def finish():
     game_world.clear()
@@ -74,8 +92,9 @@ def update():
         print("COLLISION mario:goomba")
     if game_world.collide(mario, block):
         print("BLOCK COLLIDE")
-    if game_world.collide(mario, pipe_house):
-        print("WALL COLLIDE")
+    if game_world.collide(mario, pipe_house1):
+        pass
+        #print("WALL COLLIDE")
         #camera.stop_movement()
 
 def draw():

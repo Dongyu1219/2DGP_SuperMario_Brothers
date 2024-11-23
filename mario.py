@@ -7,7 +7,6 @@ from state_machine import *
 
 from map import *
 
-
 class Mario:
     def __init__(self, camera):
             self.x, self.y = 100, 126
@@ -35,7 +34,6 @@ class Mario:
                 }
             )
 
-
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
@@ -45,7 +43,10 @@ class Mario:
             self.velocity_y -= 1  # 중력 가속도
         self.y += self.velocity_y
         # 바닥에 닿으면 멈춤
-        if self.y <= 126:
+        if self.world_x > 1300 and self.world_x < 1350:
+            self.is_grounded = False
+
+        elif self.y <= 126:
             self.y = 126
             self.velocity_y = 0
             self.is_grounded = True

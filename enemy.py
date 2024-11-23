@@ -88,7 +88,7 @@ class Flower:
 
 
     def get_bb(self):
-        return self.x - 30, self.y -60, self.x + 30, self.y +30
+        return self.x - 30, self.y -60, self.x + 30, self.y +20
 
     def handle_collision(self, group, other):
         if group == 'mario:goomba':
