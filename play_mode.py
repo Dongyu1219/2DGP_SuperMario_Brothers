@@ -1,6 +1,6 @@
 from pico2d import *
 
-from block import Pipe, Block
+from block import Pipe, Block, Iteam_Block
 from camera import Camera
 from map import Map_1
 from mario import Mario
@@ -33,7 +33,7 @@ def init():
     global pipe_house1, pipe_house2, pipe_house3
     global goomba
     global flower1, flower2, flower3
-    global block
+    global block, block2, item_block
     global camera
 
     camera = Camera()
@@ -54,8 +54,14 @@ def init():
     mario = Mario(camera)
     game_world.add_object(mario, 1)
 
-    block = Block(1020, 220, camera)
+    block = Block(1060, 220, camera)
     game_world.add_object(block, 2)
+
+    item_block = Iteam_Block(1100, 220, camera)
+    game_world.add_object(item_block, 2)
+
+    block2 = Block(1140, 220, camera)
+    game_world.add_object(block2, 2)
 
     flower2 = Flower(2200, 225, camera)
     game_world.add_object(flower2, 1)
@@ -78,7 +84,8 @@ def init():
     game_world.add_collision_pair('mario:wall', mario, pipe_house3)
 
     game_world.add_collision_pair('mario:block', mario, block)
-
+    game_world.add_collision_pair('mario:block', mario, item_block)
+    game_world.add_collision_pair('mario:block', mario, block2)
 
 def finish():
     game_world.clear()
