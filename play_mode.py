@@ -69,9 +69,13 @@ def init():
     pipe_house2 = Pipe(2180, 80, camera)
     game_world.add_object(pipe_house2, 2)
 
-    for i in range(3):
-        break_block = Break_Block(2150 + i * 40, 400, camera)
-        game_world.add_object(break_block, 2)
+    break_block0 = Break_Block(2150, 400, camera)
+    game_world.add_object(break_block0, 2)
+    break_block1 = Break_Block(2190, 400, camera)
+    game_world.add_object(break_block1, 2)
+    break_block2 = Break_Block(2230, 400, camera)
+    game_world.add_object(break_block2, 2)
+
 
     flower3 = Flower(2400, 225, camera)
     game_world.add_object(flower3, 1)

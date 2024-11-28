@@ -49,6 +49,7 @@ class Mario:
         if self.world_x > 1300 and self.world_x < 1350:
             self.is_grounded = False
 
+
         elif self.y <= 126 and self.die:
             self.y = 126
             self.velocity_y = 0
@@ -82,6 +83,7 @@ class Mario:
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
         o_left, o_bottom, o_right, o_top = other.get_bb()
         #o_left, o_bottom, o_right, o_top = other.get_bb_draw()
+
         if group == 'mario:block':
             # 충돌 방향 판별
             if bottom < o_top < top:  # 아래에서 블록 위로 충돌
@@ -114,7 +116,7 @@ class Mario:
         if group == 'mario:wall':
             # 충돌 방향 판별
             # 벽 위로 올라갈 때
-            if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10  :
+            if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10 and self.die :
                 if self.velocity_y <= 0:  # 낙하 중일 때만
                     self.y = o_top+40  # Mario의 y 위치를 벽의 상단으로 고정
                     self.velocity_y = 0  # 중력 초기화
@@ -122,7 +124,7 @@ class Mario:
                 return
 
             # 벽의 왼쪽과 충돌
-            if right > o_left+10  > left:
+            if right > o_left+10  > left and self.die:
                 self.world_x = o_left+10 - (right - left) # 위치 보정
                 self.x = self.world_x - self.camera.x  # 로컬 좌표도
                 self.state_machine.add_event(('RIGHT_STOP', 0))
@@ -130,7 +132,7 @@ class Mario:
 
 
             # 벽의 오른쪽과 충돌
-            if left < o_right-10 < right:
+            if left < o_right-10 < right and self.die:
                 self.world_x = o_right-10 + (right - left)  # 위치 보정
                 self.x = self.world_x - self.camera.x  # 로컬 좌표도 업데이트
                 self.state_machine.add_event(('LEFT_STOP', 0))
