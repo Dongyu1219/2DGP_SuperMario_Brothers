@@ -14,6 +14,7 @@ class Mario:
             self.frame = 0
             self.direction = 0
             self.camera = camera
+            self.die = True
 
             self.velocity_y = 0  # 중력을 반영한 수직 속도
             self.is_grounded = False  # 블록 위에 있는 상태
@@ -48,7 +49,7 @@ class Mario:
         if self.world_x > 1300 and self.world_x < 1350:
             self.is_grounded = False
 
-        elif self.y <= 126:
+        elif self.y <= 126 and self.die:
             self.y = 126
             self.velocity_y = 0
             self.is_grounded = True
@@ -113,7 +114,7 @@ class Mario:
         if group == 'mario:wall':
             # 충돌 방향 판별
             # 벽 위로 올라갈 때
-            if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10:
+            if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10  :
                 if self.velocity_y <= 0:  # 낙하 중일 때만
                     self.y = o_top+40  # Mario의 y 위치를 벽의 상단으로 고정
                     self.velocity_y = 0  # 중력 초기화
@@ -145,12 +146,14 @@ class Mario:
 class Die:
     @staticmethod
     def enter(mario, e):
-        # print('Mario Sleep Enter')
+        print('Mario Die Enter')
+        mario.velocity_y = 15  # 초기 수직 속도
+        mario.die = False
         pass
 
     @staticmethod
     def exit(mario, e):
-        # print('Mario Sleep Exit')
+        print('Mario Sleep Exit')
         pass
 
     @staticmethod
@@ -158,7 +161,7 @@ class Die:
         pass
 
     def draw(mario):
-        mario.die_image.draw(mario.x, mario.y, 100, 70)
+        mario.die_image.draw(mario.x, mario.y, 100, 100)
         pass
 
 
