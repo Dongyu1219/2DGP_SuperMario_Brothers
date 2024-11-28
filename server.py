@@ -1,0 +1,3 @@
+mario = None
+background = None
+
