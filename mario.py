@@ -1,6 +1,8 @@
 from asyncio import Runner
 
-from pico2d import load_image, get_time, draw_rectangle
+from pico2d import load_image, get_time, draw_rectangle, clamp, get_canvas_width, get_canvas_height
+
+import server
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
 from state_machine import *
@@ -8,12 +10,15 @@ from state_machine import *
 from map import *
 
 class Mario:
-    def __init__(self, camera):
-            self.x, self.y = 100, 126
+    def __init__(self):
+            #self.x = 100
+            self.y = 126
+            # 물리 좌표계로 바꿔야 함.
+            self.x = server.background.w / 2
+            #self.y = server.background.h / 2
             self.world_x = 0
             self.frame = 0
             self.direction = 0
-            self.camera = camera
             self.die = True
 
             self.velocity_y = 0  # 중력을 반영한 수직 속도
@@ -39,7 +44,11 @@ class Mario:
 
     def update(self):
         self.state_machine.update()
-        self.world_x = self.x + self.camera.x
+        #self.world_x = self.x + self.camera.x
+        self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time
+        # 물리 좌표계로 바꿔야 함.
+        self.x = clamp(get_canvas_width() / 2, self.x, server.background.w - get_canvas_width() / 2)
+        #self.y = clamp(get_canvas_height() / 2, self.y, server.background.h - get_canvas_height() / 2)
         #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
         #낙하처리
         if not self.is_grounded:
@@ -172,7 +181,6 @@ class Idle:
     def enter(mario,e):
         #print('Mario Idle Enter')
         mario.wait_time = get_time()
-        mario.camera.stop_movement()
     @staticmethod
     def exit(mario, e):
         #print('Boy Idle Exit')
@@ -228,7 +236,7 @@ class Run:
     @staticmethod
     def enter(mario, e):
         #print('Mario Run Enter')
-        mario.camera.resume_movement()
+        #mario.camera.resume_movement()
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             mario.direction = 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
@@ -242,9 +250,6 @@ class Run:
 
     @staticmethod
     def do(mario):
-        #
-        if mario.x< 250:
-            mario.x += mario.direction * RUN_SPEED_PPS//2 * game_framework.frame_time
         mario.frame = (mario.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % M_FRAMES_PER_ACTION
         pass
 
