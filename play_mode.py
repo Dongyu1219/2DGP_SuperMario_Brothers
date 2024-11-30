@@ -81,35 +81,21 @@ def init():
     pipe_house3 = Pipe(2380, 80, camera)
     game_world.add_object(pipe_house3, 2)
 
-    wall1 = Wall(2580, 100, camera)
-    game_world.add_object(wall1, 0)
-    wall2 = Wall(2620, 100, camera)
-    game_world.add_object(wall2, 0)
-    wall3 = Wall(2660, 100, camera)
-    game_world.add_object(wall3, 0)
-
-
 
     game_world.add_collision_pair('mario:goomba', mario, None)
     game_world.add_collision_pair('mario:goomba', None, goomba)
 
-    game_world.add_collision_pair('mario:goomba', None, flower1)
-    game_world.add_collision_pair('mario:goomba', None, flower2)
-    game_world.add_collision_pair('mario:goomba', None, flower3)
     game_world.add_collision_pair('mario:pipe_house', mario, pipe_house1)
     game_world.add_collision_pair('mario:pipe_house', mario, pipe_house2)
     game_world.add_collision_pair('mario:pipe_house', mario, pipe_house3)
 
+    flowers = [flower1, flower2, flower3]
+    for flower in flowers:
+        game_world.add_collision_pair('mario:goomba', mario, flower)
+
     game_world.add_collision_pair('mario:item', mario, item)
     game_world.add_collision_pair('mario:item_block', mario, item_block)
 
-    break_blocks = [break_block0, break_block1, break_block2]
-    for break_block in break_blocks:
-        game_world.add_collision_pair('mario:block', mario, break_block)
-
-    walls = [wall1, wall2, wall3]
-    for wall in walls:
-        game_world.add_collision_pair('mario:wall', mario, wall)
 
 def finish():
     game_world.clear()

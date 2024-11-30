@@ -305,7 +305,7 @@ class Jump:
             mario.velocity_y = 20
             mario.is_grounded = False
         elif up_down(e) and mario.big_Mode:
-            mario.velocity_y = 25
+            mario.velocity_y = 22
             mario.is_grounded = False
 
     @staticmethod
