@@ -21,8 +21,8 @@ def handle_events():
         # elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_i):
         #     game_framework.push_mode(item_mode)
         else:
-            server.mario.handle_event(event)
-            #map.handle_events(event)
+            mario.handle_event(event)
+            map.handle_events(event)
             camera.handle_events(event)
 
 def init():
@@ -32,14 +32,16 @@ def init():
     global block, block2, item_block
     global break_block0, break_block1, break_block2
     global camera
+    global map
+    global mario
 
     camera = Camera()
     game_world.add_object(camera, 0)
 
-    server.background = Background()
-    game_world.add_object(server.background, 0)
-    server.mario = Mario()
-    game_world.add_object(server.mario, 1)
+    # server.background = Background()
+    # game_world.add_object(server.background, 0)
+    # server.mario = Mario()
+    # game_world.add_object(server.mario, 1)
 
     map = Map_1(camera)
     game_world.add_object(map, 0)
@@ -53,8 +55,8 @@ def init():
     pipe_house1 = Pipe(865, 80, camera)
     game_world.add_object(pipe_house1, 2)
 
-    # mario = Mario(camera)
-    # game_world.add_object(mario, 1)
+    mario = Mario(camera)
+    game_world.add_object(mario, 1)
 
     block = Block(1060, 220, camera)
     game_world.add_object(block, 2)
@@ -83,22 +85,22 @@ def init():
     pipe_house3 = Pipe(2380, 80, camera)
     game_world.add_object(pipe_house3, 2)
 
-    game_world.add_collision_pair('mario:goomba', server.mario, None)
+    game_world.add_collision_pair('mario:goomba', mario, None)
     game_world.add_collision_pair('mario:goomba', None, goomba)
 
     game_world.add_collision_pair('mario:goomba', None, flower1)
     game_world.add_collision_pair('mario:goomba', None, flower2)
     game_world.add_collision_pair('mario:goomba', None, flower3)
-    game_world.add_collision_pair('mario:wall', server.mario, pipe_house1)
-    game_world.add_collision_pair('mario:wall', server.mario, pipe_house2)
-    game_world.add_collision_pair('mario:wall', server.mario, pipe_house3)
+    game_world.add_collision_pair('mario:wall', mario, pipe_house1)
+    game_world.add_collision_pair('mario:wall', mario, pipe_house2)
+    game_world.add_collision_pair('mario:wall', mario, pipe_house3)
 
-    game_world.add_collision_pair('mario:block', server.mario, block)
-    game_world.add_collision_pair('mario:item_block', server.mario, item_block)
-    game_world.add_collision_pair('mario:block', server.mario, block2)
-    game_world.add_collision_pair('mario:block', server.mario, break_block1)
-    game_world.add_collision_pair('mario:block', server.mario, break_block2)
-    game_world.add_collision_pair('mario:block', server.mario, break_block0)
+    game_world.add_collision_pair('mario:block', mario, block)
+    game_world.add_collision_pair('mario:item_block', mario, item_block)
+    game_world.add_collision_pair('mario:block', mario, block2)
+    game_world.add_collision_pair('mario:block', mario, break_block1)
+    game_world.add_collision_pair('mario:block', mario, break_block2)
+    game_world.add_collision_pair('mario:block', mario, break_block0)
 
 def finish():
     game_world.clear()
@@ -108,11 +110,11 @@ def update():
     #camera.update()
     game_world.update()
     game_world.handle_collisions()
-    if game_world.collide(server.mario, goomba):
+    if game_world.collide(mario, goomba):
         print("COLLISION mario:goomba")
-    if game_world.collide(server.mario, block):
+    if game_world.collide(mario, block):
         print("BLOCK COLLIDE")
-    if game_world.collide(server.mario, pipe_house1):
+    if game_world.collide(mario, pipe_house1):
         pass
         #print("WALL COLLIDE")
         #camera.stop_movement()
