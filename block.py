@@ -82,16 +82,7 @@ class Iteam_Block:
         #draw_rectangle(*self.get_bb())
 
     def handle_collision(self, group, other):
-        m_left, m_bottom, m_right, m_top = other.get_bb()
-        left, bottom, right, top = self.get_bb()
-        if group == 'mario:item_block':
-
-            pass
-
-        # if self.timer >= self.frame_time:
-        #     self.timer = 0
-        #     self.current_frame = (self.current_frame + 1) % len(self.images)
-
+        pass
     def update(self):
         # 프레임 변경 처리
         current_time = get_time()
@@ -186,10 +177,10 @@ class Wall:
     def draw(self):
         screen_x = self.x - self.camera.x
 
-        left = screen_x - self.width // 2 - 10
+        left = screen_x - self.width // 2
         bottom = self.y - self.height // 2
-        right = screen_x + 80 - self.width // 2
-        top = self.y + 120 - self.height // 2
+        right = screen_x + self.width // 2
+        top = self.y + self.height // 2
         draw_rectangle(left, bottom, right, top)
             # draw_rectangle(*self.get_bb())
 

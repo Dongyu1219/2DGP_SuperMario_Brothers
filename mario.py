@@ -1,6 +1,8 @@
 from asyncio import Runner
 #this is main
-from pico2d import load_image, get_time, draw_rectangle
+from pico2d import load_image, get_time, draw_rectangle, delay
+
+import play_mode
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
 from state_machine import *
@@ -19,6 +21,8 @@ class Mario:
             self.direction = 0
             self.die = True
             self.camera = camera
+            self.tall = 0
+            self.big_Mode = False
 
             self.velocity_y = 0  # 중력을 반영한 수직 속도
             self.is_grounded = False  # 블록 위에 있는 상태
@@ -54,7 +58,7 @@ class Mario:
             self.velocity_y -= 1  # 중력 가속도
         self.y += self.velocity_y
         # 바닥에 닿으면 멈춤
-        if self.world_x > 1300 and self.world_x < 1350:
+        if self.world_x > 1300 and self.world_x < 1380:
             self.is_grounded = False
 
 
@@ -78,14 +82,10 @@ class Mario:
             draw_rectangle(*self.get_bb_draw())
 
     def get_bb(self):
-        # fill here
-        # 네 개의 값, x1, y1, x2, y2
         return self.world_x-20, self.y-50, self.world_x + 20, self.y + 20
 
     def get_bb_draw(self):
-        # fill here
-        # 네 개의 값, x1, y1, x2, y2
-        return self.x-20, self.y-45, self.x + 20, self.y + 20
+        return self.x-20, self.y-45, self.x + 20, self.y + 20 + self.tall//2
 
     def handle_collision(self, group, other):
         left, bottom, right, top = self.get_bb()  # 마리오의 충돌 박스
@@ -124,8 +124,16 @@ class Mario:
             elif left < o_right < right:  # 왼쪽 블록과 충돌
                 self.world_x = o_right + (right - left)
 
-        if group == 'mario:wall':
-            # 충돌 방향 판별
+        if group == 'mario:item':
+            if top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
+                other.creating = 1
+            if other.hit > 1:
+                print(f'other.hit')
+                delay(1.0)
+                self.tall = 60
+                self.big_Mode = True
+
+        if group == 'mario:pipe_house':
             # 벽 위로 올라갈 때
             if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10 and self.die :
                 if self.velocity_y <= 0:  # 낙하 중일 때만
@@ -149,10 +157,37 @@ class Mario:
                 self.state_machine.add_event(('LEFT_STOP', 0))
                 print("Left collision with wall")
 
+        if group == 'mario:wall':
+            # 벽 위로 올라갈 때
+            if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10 and self.die :
+                if self.velocity_y <= 0:  # 낙하 중일 때만
+                    self.y = o_top+40  # Mario의 y 위치를 벽의 상단으로 고정
+                    self.velocity_y = 0  # 중력 초기화
+                    self.is_grounded = True
+                return
+
+            # 벽의 왼쪽과 충돌
+            if right > o_left+10  > left and self.die:
+                self.world_x = o_left+10 - (right - left) # 위치 보정
+                self.x = self.world_x - self.camera.x  # 로컬 좌표도
+                self.state_machine.add_event(('RIGHT_STOP', 0))
+                print("Right collision with wall")
+
+
+            # 벽의 오른쪽과 충돌
+            if left < o_right-10 < right and self.die:
+                self.world_x = o_right-10 + (right - left)  # 위치 보정
+                self.x = self.world_x - self.camera.x  # 로컬 좌표도 업데이트
+                self.state_machine.add_event(('LEFT_STOP', 0))
+                print("Left collision with wall")
 
         if group == 'mario:goomba':
             print("collision")
-            self.state_machine.add_event(('DIE', 0))
+            if (self.big_Mode == False):
+                self.state_machine.add_event(('DIE', 0))
+            else:
+                self.big_Mode = False
+                self.tall = 0
             #game_framework.quit()
 
 
@@ -194,9 +229,9 @@ class Idle:
     @staticmethod
     def draw(mario):
         if mario.direction >= 0 :
-            mario.image.clip_draw(0, 0, 34, 26, mario.x, mario.y, 100, 100)
+            mario.image.clip_draw(0, 0, 34, 26, mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
         else:
-            mario.image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
+            mario.image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
 
 
 class Left_Stop:
@@ -259,9 +294,9 @@ class Run:
 
     def draw(mario):
         if mario.direction ==1 :
-            mario.image.clip_draw(int(mario.frame)*35, 0, 34, 26, mario.x, mario.y, 100, 100)
+            mario.image.clip_draw(int(mario.frame)*35, 0, 34, 26, mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
         else:
-            mario.image.clip_composite_draw(int(mario.frame) * 35, 0, 34, 26, 0, 'h', mario.x, mario.y, 100, 100)
+            mario.image.clip_composite_draw(int(mario.frame) * 35, 0, 34, 26, 0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
         pass
 
 
@@ -269,7 +304,10 @@ class Jump:
     @staticmethod
     def enter(mario, e):
         #print('Mario Jump Enter')
-        if up_down(e):
+        if up_down(e) and mario.big_Mode == False:
+            mario.velocity_y = 20
+            mario.is_grounded = False
+        elif up_down(e) and mario.big_Mode:
             mario.velocity_y = 25
             mario.is_grounded = False
 
@@ -285,9 +323,9 @@ class Jump:
 
     def draw(mario):
         if mario.direction ==1 :
-            mario.jump_image.draw(mario.x, mario.y, 100, 100)
+            mario.jump_image.draw(mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
         else:
-            mario.jump_image.composite_draw(0, 'h', mario.x, mario.y, 100, 100)
+            mario.jump_image.composite_draw(0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
         pass
 
 
