@@ -1,5 +1,7 @@
 from pico2d import draw_rectangle, load_image, get_time
 
+import game_world
+
 
 class Block:
     def __init__(self, x, y, camera):
@@ -129,6 +131,7 @@ class Break_Block:
         #draw_rectangle(*self.get_bb())
 
     def handle_collision(self, group, other):
+        game_world.remove_object(self)
         pass
 
     def update(self):

@@ -1,8 +1,6 @@
 from asyncio import Runner
 #this is main
 from pico2d import load_image, get_time, draw_rectangle, delay
-
-import play_mode
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
 from state_machine import *
@@ -60,7 +58,6 @@ class Mario:
         # 바닥에 닿으면 멈춤
         if self.world_x > 1300 and self.world_x < 1380:
             self.is_grounded = False
-
 
         elif self.y <= 126 and self.die:
             self.y = 126

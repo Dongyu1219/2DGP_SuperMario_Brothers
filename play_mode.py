@@ -105,7 +105,7 @@ def init():
 
     break_blocks = [break_block0, break_block1, break_block2]
     for break_block in break_blocks:
-        game_world.add_collision_pair('mario:break_block', mario, break_block)
+        game_world.add_collision_pair('mario:block', mario, break_block)
 
     walls = [wall1, wall2, wall3]
     for wall in walls:

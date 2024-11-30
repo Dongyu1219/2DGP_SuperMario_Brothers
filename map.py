@@ -17,3 +17,20 @@ class Map_1:
         #self.world_1.clip_draw(int(self.camera.x), 0, 320, 240, 400, 300, 800, 600)
         pass
 
+class Boss_Map:
+    def __init__(self, camera):
+        self.boss_world = load_image('resource/map/boss_map.png')
+        self.camera = camera
+    def update(self):
+        pass
+
+    def handle_events(self, event):
+        pass
+
+    def draw(self):
+        global camera
+        #2500
+        self.boss_world.clip_draw(int(self.camera.x * 320/800), 0, 320, 240, 400, 300, 800, 600)
+        #self.world_1.clip_draw(int(self.camera.x), 0, 320, 240, 400, 300, 800, 600)
+        pass
+
