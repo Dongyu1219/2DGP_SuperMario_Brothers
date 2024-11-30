@@ -8,7 +8,7 @@ import game_world
 import game_framework
 import title_mode
 from enemy import Goomba, Flower
-from background import FixedBackground as Background
+from background import NewFixedBackground as Background
 import server
 #import item_mode
 def handle_events():
