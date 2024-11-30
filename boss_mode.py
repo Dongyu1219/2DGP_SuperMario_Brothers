@@ -1,15 +1,18 @@
 from pico2d import *
 
-from block import Iteam_Block
+from block import Iteam_Block, Block
 from camera2 import Camera
 from item import Item
-from map import Map_1, Boss_Map
+from map import Boss_Map
 from mario import Mario
 import game_world
 import game_framework
 import title_mode
-from enemy import Goomba, Flower
+from boss import Lava, Koopa
+
+
 #import item_mode
+
 def handle_events():
     events = get_events()
     for event in events:
@@ -30,6 +33,7 @@ def init():
     global map
     global mario
     global item
+    global boss
 
     camera = Camera()
     game_world.add_object(camera, 0)
@@ -42,12 +46,34 @@ def init():
 
     item_block = Iteam_Block(1100, 220, camera)
     game_world.add_object(item_block, 2)
-
     item = Item(1100, 220, camera)
     game_world.add_object(item, 1)
 
+    lava_positions = [1700, 1800, 1950, 2100, 2250, 2300]  # 용암 위치 리스트
+    lavas = []  # 생성된 Lava 객체를 저장할 리스트
+    for pos in lava_positions:
+        lava = Lava(pos, camera)
+        game_world.add_object(lava, 1)
+        lavas.append(lava)
+    for lava in lavas:
+        game_world.add_collision_pair('mario:goomba', mario, lava)
+
+    block_positions = [1700, 1800, 1950, 2200]
+    blocks = []  # 생성된 Lava 객체를 저장할 리스트
+    for poss in block_positions:
+        block = Block(poss, 100,  camera)
+        game_world.add_object(block, 2)
+        blocks.append(block)
+    for block in blocks:
+        game_world.add_collision_pair('mario:block', mario, block)
+
+
+    boss = Koopa(2200, 80 ,camera)
+    game_world.add_object(boss, 1)
+
     game_world.add_collision_pair('mario:item', mario, item)
     game_world.add_collision_pair('mario:item_block', mario, item_block)
+
 
 def finish():
     game_world.clear()
