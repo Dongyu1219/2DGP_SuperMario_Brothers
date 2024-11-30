@@ -36,8 +36,13 @@ class Iteam_Block:
     def __init__(self, x, y, camera):
         self.x, self.y = x, y
         self.width, self.height = 20, 20
+        self.original_y = y  # 블록의 초기 위치 저장
         self.camera = camera
         self.hit = True
+        self.is_rising = False  # 블록이 위로 올라가는 상태
+        self.rise_start_time = 0  # 블록이 올라가기 시작한 시간
+        self.rise_duration = 0.5  # 블록이 올라가는 시간
+        self.rise_height = 10  # 블록이 올라가는 높이
         self.images = [
             load_image('resource/block/item_block_1.png'),
             load_image('resource/block/item_block_2.png'),
@@ -47,8 +52,10 @@ class Iteam_Block:
 
         self.time = get_time()
         self.current_frame = 0
-        self.frame_time = 90.0
+        self.frame_time = 0.1  # 프레임 교체 주기 (초 단위)
+        self.last_frame_time = get_time()  # 프레임 변경 기준 시간
         self.timer = 0
+
 
     def get_bb(self):
         return self.x-self.width, self.y-self.height, self.x + self.width, self.y + self.width
@@ -68,22 +75,40 @@ class Iteam_Block:
         if self.hit:
             current_image.draw(screen_x , self.y , 40, 40)
         else:   #히트됨.
+
             self.image.draw(screen_x, self.y, 40, 40)
+
         draw_rectangle(*self.get_bb_draw())
         #draw_rectangle(*self.get_bb())
 
     def handle_collision(self, group, other):
+        m_left, m_bottom, m_right, m_top = other.get_bb()
+        left, bottom, right, top = self.get_bb()
         if group == 'mario:item_block':
-            self.hit = False
-        pass
+
+            pass
+
+        # if self.timer >= self.frame_time:
+        #     self.timer = 0
+        #     self.current_frame = (self.current_frame + 1) % len(self.images)
 
     def update(self):
-        self.timer += get_time()
-        if self.timer >= self.frame_time:
-            self.timer = 0
+        # 프레임 변경 처리
+        current_time = get_time()
+        if current_time - self.last_frame_time >= self.frame_time:
             self.current_frame = (self.current_frame + 1) % len(self.images)
-        pass
+            self.last_frame_time = current_time
 
+        # 상승 애니메이션 처리
+        if self.is_rising:
+            elapsed_time = current_time - self.rise_start_time
+            if elapsed_time <= self.rise_duration:
+                # 상승 중
+                self.y = self.original_y + self.rise_height * (elapsed_time / self.rise_duration)
+            else:
+                # 상승 완료 후 원래 위치로
+                self.y = self.original_y
+                self.is_rising = False
 
 class Break_Block:
     def __init__(self, x, y, camera):

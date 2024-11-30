@@ -115,6 +115,9 @@ class Mario:
             elif top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
                 self.y = o_bottom - (top - bottom)
                 self.velocity_y = -1  # 반발력
+                other.hit = False
+                other.is_rising = True
+                other.rise_start_time = get_time()  # 충돌 시점 시간 기록
             # 수평 충돌 처리
             if right > o_left > left:  # 오른쪽 블록과 충돌
                 self.world_x = o_left - (right - left)

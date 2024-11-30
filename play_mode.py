@@ -8,8 +8,6 @@ import game_world
 import game_framework
 import title_mode
 from enemy import Goomba, Flower
-from background import NewFixedBackground as Background
-import server
 #import item_mode
 def handle_events():
     events = get_events()
@@ -58,14 +56,14 @@ def init():
     mario = Mario(camera)
     game_world.add_object(mario, 1)
 
-    block = Block(1060, 220, camera)
-    game_world.add_object(block, 2)
+    # block = Block(1060, 220, camera)
+    # game_world.add_object(block, 2)
 
     item_block = Iteam_Block(1100, 220, camera)
     game_world.add_object(item_block, 2)
 
-    block2 = Block(1140, 220, camera)
-    game_world.add_object(block2, 2)
+    # block2 = Block(1140, 220, camera)
+    # game_world.add_object(block2, 2)
 
     flower2 = Flower(2200, 225, camera)
     game_world.add_object(flower2, 1)
@@ -95,9 +93,9 @@ def init():
     game_world.add_collision_pair('mario:wall', mario, pipe_house2)
     game_world.add_collision_pair('mario:wall', mario, pipe_house3)
 
-    game_world.add_collision_pair('mario:block', mario, block)
+#    game_world.add_collision_pair('mario:block', mario, block)
     game_world.add_collision_pair('mario:item_block', mario, item_block)
-    game_world.add_collision_pair('mario:block', mario, block2)
+
     game_world.add_collision_pair('mario:block', mario, break_block1)
     game_world.add_collision_pair('mario:block', mario, break_block2)
     game_world.add_collision_pair('mario:block', mario, break_block0)
@@ -112,8 +110,8 @@ def update():
     game_world.handle_collisions()
     if game_world.collide(mario, goomba):
         print("COLLISION mario:goomba")
-    if game_world.collide(mario, block):
-        print("BLOCK COLLIDE")
+    # if game_world.collide(mario, block):
+    #     print("BLOCK COLLIDE")
     if game_world.collide(mario, pipe_house1):
         pass
         #print("WALL COLLIDE")
