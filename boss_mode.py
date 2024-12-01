@@ -2,7 +2,7 @@ from pico2d import *
 
 from block import Iteam_Block, Block
 from camera2 import Camera
-from item import Item
+from item import Item, Fire_Item
 from map import Boss_Map
 from mario import Mario
 import game_world
@@ -46,7 +46,7 @@ def init():
 
     item_block = Iteam_Block(1100, 220, camera)
     game_world.add_object(item_block, 2)
-    item = Item(1100, 220, camera)
+    item = Fire_Item(1100, 220, camera)
     game_world.add_object(item, 1)
 
     lava_positions = [1700, 1800, 1950, 2100, 2250, 2300]  # 용암 위치 리스트
@@ -71,7 +71,7 @@ def init():
     koopa = Koopa(300, 155 ,camera)
     game_world.add_object(koopa, 1)
 
-    game_world.add_collision_pair('mario:item', mario, item)
+    game_world.add_collision_pair('mario:fire_item', mario, item)
     game_world.add_collision_pair('mario:item_block', mario, item_block)
 
 

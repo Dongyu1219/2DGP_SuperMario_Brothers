@@ -130,6 +130,14 @@ class Mario:
                 self.tall = 60
                 self.big_Mode = True
 
+        if group == 'mario:fire_item':
+            if top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
+                other.creating = 1
+            if other.hit > 1:
+                print(f'other.hit')
+                delay(1.0)
+                self.fire_Mode = True
+
         if group == 'mario:pipe_house':
             # 벽 위로 올라갈 때
             if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10 and self.die :

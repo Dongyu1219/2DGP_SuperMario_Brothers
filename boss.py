@@ -14,14 +14,13 @@ class Koopa:
         self.camera = camera
 
     def update(self):
-        self.frame = (self.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % M_FRAMES_PER_ACTION
+        self.frame = (self.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time/3) % M_FRAMES_PER_ACTION
 
         #self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time *2
 
     def draw(self):
         screen_x = self.x - self.camera.x
         self.image.clip_draw(int(self.frame)*34, 0, 32, 32, screen_x, self.y, 150, 150)
-        print(f"Goomba: World X = {self.x}, Screen X = {screen_x}, Y = {self.y}")
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
