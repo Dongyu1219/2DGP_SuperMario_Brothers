@@ -1,5 +1,6 @@
+import random
 from pico2d import *
-
+import time
 from block import Iteam_Block, Block
 from camera2 import Camera
 from item import Item, Fire_Item
@@ -8,10 +9,12 @@ from mario import Mario
 import game_world
 import game_framework
 import title_mode
-from boss import Lava, Koopa
-
+from boss import Lava, Koopa, Killer
 
 #import item_mode
+
+last_killer_spawn_time = 0  # 마지막으로 Killer가 생성된 시간
+killer_spawn_interval = 4  # Killer 생성 간격 (초)
 
 def handle_events():
     events = get_events()
@@ -83,6 +86,8 @@ def update():
     #camera.update()
     game_world.update()
     game_world.handle_collisions()
+    # Killer 생성 호출
+    spawn_killer()
 
 def draw():
 
@@ -96,3 +101,15 @@ def pause():
 
 def resume():
     pass
+
+def spawn_killer():
+    global last_killer_spawn_time
+    current_time = time.time()
+    if current_time - last_killer_spawn_time >= killer_spawn_interval:
+        # 랜덤한 y 좌표 설정 (예: y 범위: 50 ~ 400)
+        random_y = random.randint(50, 400)
+        killer = Killer(3500, random_y, camera)
+        game_world.add_object(killer, 1)
+        game_world.add_collision_pair('mario:goomba', mario, killer)
+        print(f"Killer spawned at x=3000, y={random_y}")
+        last_killer_spawn_time = current_time
