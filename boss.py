@@ -2,7 +2,38 @@ from pico2d import load_image, draw_rectangle
 
 import game_framework
 import game_world
-from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, FRAMES_PER_ACTION
+from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, FRAMES_PER_ACTION, RUN_SPEED_PPS
+
+class Killer:
+    def __init__(self, x, y, camera):
+        self.x, self.y = x, y
+        self.frame = 0
+        self.direction = 1
+        self.image = load_image('resource/enemy/killer.png')
+        self.camera = camera
+
+    def update(self):
+        self.x -= self.direction * RUN_SPEED_PPS * game_framework.frame_time *2
+
+    def draw(self):
+        screen_x = self.x - self.camera.x
+        self.image.draw(screen_x, self.y, 50, 30)
+        left, bottom, right, top = self.get_bb()
+        screen_left = left - self.camera.x
+        screen_right = right - self.camera.x
+        draw_rectangle(screen_left, bottom, screen_right, top)
+        #print(f"Goomba Screen X: {screen_x}")
+
+    def handle_event(self, event):
+        pass
+
+    def get_bb(self):
+        return self.x - 30, self.y -30, self.x + 30, self.y +30
+
+    def handle_collision(self, group, other):
+        if group == 'mario:goomba':
+            print("Mario and Killer collided!")
+            #game_world.remove_object(self)
 
 
 class Koopa:
