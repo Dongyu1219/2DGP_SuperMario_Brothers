@@ -21,6 +21,7 @@ class Mario:
             self.camera = camera
             self.tall = 0
             self.big_Mode = False
+            self.fire_mode = False
 
             self.velocity_y = 0  # 중력을 반영한 수직 속도
             self.is_grounded = False  # 블록 위에 있는 상태
@@ -29,6 +30,7 @@ class Mario:
             self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
             self.jump_image = load_image('resource/mario/small_mario_jump_image.png')
             self.die_image = load_image('resource/mario/small_mario_die_image.png')
+            self.fire_mode_image = load_image('resource/mario/small_mario_fire_runningsheet.png')
             self.state_machine = StateMachine(self)
             self.state_machine.start(Idle)
             self.state_machine.set_transitions(
@@ -136,7 +138,7 @@ class Mario:
             if other.hit > 1:
                 print(f'other.hit')
                 delay(1.0)
-                self.fire_Mode = True
+                self.fire_mode = True
 
         if group == 'mario:pipe_house':
             # 벽 위로 올라갈 때
@@ -233,10 +235,17 @@ class Idle:
             mario.state_machine.add_event(('TIME_OUT', 0))
     @staticmethod
     def draw(mario):
-        if mario.direction >= 0 :
-            mario.image.clip_draw(0, 0, 34, 26, mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
-        else:
-            mario.image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+        if (mario.fire_mode):
+            if mario.direction >= 0:
+                mario.fire_mode_image.clip_draw(0, 0, 34, 26, mario.x, mario.y , 100, 100)
+            else:
+                mario.fire_mode_image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y, 100,
+                                                100)
+        else :
+            if mario.direction >= 0 :
+                mario.image.clip_draw(0, 0, 34, 26, mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+            else:
+                mario.image.clip_composite_draw(0, 0, 34, 26, 0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
 
 
 class Left_Stop:
@@ -298,11 +307,19 @@ class Run:
         pass
 
     def draw(mario):
-        if mario.direction ==1 :
-            mario.image.clip_draw(int(mario.frame)*35, 0, 34, 26, mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+        if (mario.fire_mode):
+            if mario.direction == 1:
+                mario.fire_mode_image.clip_draw(int(mario.frame) * 35, 0, 34, 26, mario.x, mario.y + mario.tall // 3, 100,
+                                      100 + mario.tall)
+            else:
+                mario.fire_mode_image.clip_composite_draw(int(mario.frame) * 35, 0, 34, 26, 0, 'h', mario.x,
+                                                mario.y + mario.tall // 3, 100, 100 + mario.tall)
         else:
-            mario.image.clip_composite_draw(int(mario.frame) * 35, 0, 34, 26, 0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
-        pass
+            if mario.direction ==1 :
+                mario.image.clip_draw(int(mario.frame)*35, 0, 34, 26, mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+            else:
+                mario.image.clip_composite_draw(int(mario.frame) * 35, 0, 34, 26, 0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+
 
 
 class Jump:
