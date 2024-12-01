@@ -68,7 +68,7 @@ def init():
         game_world.add_collision_pair('mario:block', mario, block)
 
 
-    koopa = Koopa(300, 155 ,camera)
+    koopa = Koopa(3000, 155 ,camera)
     game_world.add_object(koopa, 1)
 
     game_world.add_collision_pair('mario:fire_item', mario, item)
