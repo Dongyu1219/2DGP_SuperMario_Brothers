@@ -33,7 +33,7 @@ def init():
     global map
     global mario
     global item
-    global boss
+    global koopa
 
     camera = Camera()
     game_world.add_object(camera, 0)
@@ -68,8 +68,8 @@ def init():
         game_world.add_collision_pair('mario:block', mario, block)
 
 
-    boss = Koopa(2200, 80 ,camera)
-    game_world.add_object(boss, 1)
+    koopa = Koopa(300, 155 ,camera)
+    game_world.add_object(koopa, 1)
 
     game_world.add_collision_pair('mario:item', mario, item)
     game_world.add_collision_pair('mario:item_block', mario, item_block)

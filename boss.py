@@ -2,7 +2,7 @@ from pico2d import load_image, draw_rectangle
 
 import game_framework
 import game_world
-from numbers import ACTION_PER_TIME, FRAMES_PER_ACTION, RUN_SPEED_PPS
+from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, FRAMES_PER_ACTION
 
 
 class Koopa:
@@ -10,18 +10,18 @@ class Koopa:
         self.x, self.y = x, y
         self.frame = 0
         self.direction = 1
-        self.koopa = load_image('resource/enemy/koopa_running.png')
+        self.image = load_image('resource/enemy/koopa_running.png')
         self.camera = camera
 
     def update(self):
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+        self.frame = (self.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % M_FRAMES_PER_ACTION
 
-        self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time *2
+        #self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time *2
 
     def draw(self):
         screen_x = self.x - self.camera.x
-        self.koopa.clip_draw(int(self.frame)*13, 0, 17, 16, screen_x, self.y, 200, 200)
-        #print(f"Goomba: World X = {self.x}, Screen X = {screen_x}, Y = {self.y}")
+        self.image.clip_draw(int(self.frame)*34, 0, 32, 32, screen_x, self.y, 150, 150)
+        print(f"Goomba: World X = {self.x}, Screen X = {screen_x}, Y = {self.y}")
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
