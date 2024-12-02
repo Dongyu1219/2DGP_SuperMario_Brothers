@@ -9,12 +9,14 @@ from mario import Mario
 import game_world
 import game_framework
 import title_mode
-from boss import Lava, Koopa, Killer
+from boss import Lava, Koopa, Killer, Boss_Goomba
 
 #import item_mode
 
-last_killer_spawn_time = 0  # 마지막으로 Killer가 생성된 시간
-killer_spawn_interval = 4  # Killer 생성 간격 (초)
+last_killer_spawn_time = 0
+killer_spawn_interval = 4
+last_goomba_spawn_time = 0  # 마지막으로 Killer가 생성된 시간
+goomba_spawn_interval = 3
 
 def handle_events():
     events = get_events()
@@ -70,7 +72,6 @@ def init():
     for block in blocks:
         game_world.add_collision_pair('mario:block', mario, block)
 
-
     koopa = Koopa(3000, 155 ,camera)
     game_world.add_object(koopa, 1)
 
@@ -84,10 +85,14 @@ def finish():
 
 def update():
     #camera.update()
+    global camera
     game_world.update()
     game_world.handle_collisions()
     # Killer 생성 호출
     spawn_killer()
+    print(camera.x)
+    if camera.x > 2000:
+        spawn_goomba()
 
 def draw():
 
@@ -107,9 +112,19 @@ def spawn_killer():
     current_time = time.time()
     if current_time - last_killer_spawn_time >= killer_spawn_interval:
         # 랜덤한 y 좌표 설정 (예: y 범위: 50 ~ 400)
-        random_y = random.randint(50, 400)
+        random_y = random.randint(150, 400)
         killer = Killer(3500, random_y, camera)
-        game_world.add_object(killer, 1)
+        game_world.add_object(killer, 2)
         game_world.add_collision_pair('mario:goomba', mario, killer)
         print(f"Killer spawned at x=3000, y={random_y}")
         last_killer_spawn_time = current_time
+
+def spawn_goomba():
+    global last_goomba_spawn_time
+    current_time = time.time()
+    if current_time - last_goomba_spawn_time >= goomba_spawn_interval:
+        goomba = Boss_Goomba(3500, 110, camera)
+        game_world.add_object(goomba, 1)
+        game_world.add_collision_pair('mario:goomba', mario, goomba)
+        print(f"Killer spawned at x=3000, y={155}")
+        last_goomba_spawn_time = current_time
