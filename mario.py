@@ -1,6 +1,9 @@
 from asyncio import Runner
 #this is main
 from pico2d import load_image, get_time, draw_rectangle, delay
+
+import game_world
+from ball import Ball
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
 from state_machine import *
@@ -21,7 +24,7 @@ class Mario:
             self.camera = camera
             self.tall = 0
             self.big_Mode = False
-            self.fire_mode = False
+            self.fire_mode = True
 
             self.velocity_y = 0  # 중력을 반영한 수직 속도
             self.is_grounded = False  # 블록 위에 있는 상태
@@ -31,14 +34,15 @@ class Mario:
             self.jump_image = load_image('resource/mario/small_mario_jump_image.png')
             self.die_image = load_image('resource/mario/small_mario_die_image.png')
             self.fire_mode_image = load_image('resource/mario/small_mario_fire_runningsheet.png')
+            self.fire_mode_jump_image = load_image('resource/mario/small_mario_fire_jump_image.png')
             self.state_machine = StateMachine(self)
             self.state_machine.start(Idle)
             self.state_machine.set_transitions(
                 {
-                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle, left_stop : Idle, right_stop: Idle, die: Die},
-                    Run: {right_down: Run, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, right_stop : Right_Stop, left_stop : Left_Stop, die: Die},
+                    Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, up_down : Jump, jump_down : Idle, left_stop : Idle, right_stop: Idle, die: Die, space_down: Idle},
+                    Run: {right_down: Run, left_down: Idle, right_up: Idle, left_up: Idle, time_out: Idle, up_down : Jump, right_stop : Right_Stop, left_stop : Left_Stop, die: Die, space_down: Run},
                     Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle, die: Die},
-                    Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump, die: Die},
+                    Jump : {jump_down : Idle, right_down: Jump, left_down: Jump, right_up: Jump, left_up: Jump, die: Die, space_down: Jump},
                     Left_Stop : {right_down: Run, left_down: Left_Stop, left_up: Left_Stop, right_up: Run, up_down : Jump, jump_down : Idle},
                     Right_Stop : {right_down: Right_Stop, left_down: Run, left_up: Run, right_up: Right_Stop, up_down : Jump, jump_down : Idle},
                     Die : {die : Die}
@@ -48,16 +52,10 @@ class Mario:
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
-        #self.x += self.direction * RUN_SPEED_PPS * game_framework.frame_time
-        # 물리 좌표계로 바꿔야 함.
-        #self.x = clamp(get_canvas_width() / 2, self.x, server.background.w - get_canvas_width() / 2)
-        #self.y = clamp(get_canvas_height() / 2, self.y, server.background.h - get_canvas_height() / 2)
         #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
-        #낙하처리
         if not self.is_grounded:
             self.velocity_y -= 1  # 중력 가속도
         self.y += self.velocity_y
-        # 바닥에 닿으면 멈춤
         if self.world_x > 1300 and self.world_x < 1380:
             self.is_grounded = False
 
@@ -69,7 +67,6 @@ class Mario:
             self.is_grounded = False  # 공중 상태로 전환
 
     def handle_event(self, event):
-        #튜플을 이용해서 이벤트 상태 나타내기
         self.state_machine.add_event(
             ('INPUT', event)
         )
@@ -79,6 +76,13 @@ class Mario:
             self.state_machine.draw()
             #self.mario.clip_draw(self.frame*35, 0, 34, 26, self.x, self.y, 100, 100)
             draw_rectangle(*self.get_bb_draw())
+
+    def fire_ball(self):
+        if self.fire_mode:
+            ball = Ball(self.x, self.y, self.direction * 10)
+            game_world.add_object(ball, 2)
+            game_world.add_collision_pair('goomba:ball', None, ball)
+
 
     def get_bb(self):
         return self.world_x-20, self.y-50, self.world_x + 20, self.y + 20
@@ -228,6 +232,8 @@ class Idle:
     @staticmethod
     def exit(mario, e):
         #print('Boy Idle Exit')
+        if space_down(e):
+            mario.fire_ball()
         pass
     @staticmethod
     def do(mario):
@@ -296,7 +302,8 @@ class Run:
 
     @staticmethod
     def exit(mario, e):
-        #print('Mario Sleep Exit')
+        if space_down(e):
+            mario.fire_ball()
         pass
 
     @staticmethod
@@ -335,7 +342,8 @@ class Jump:
 
     @staticmethod
     def exit(mario, e):
-        #print('Mario Jump Exit')
+        if space_down(e):
+            mario.fire_ball()
         pass
 
     @staticmethod
@@ -344,12 +352,16 @@ class Jump:
             mario.state_machine.add_event(('JUMP_DOWN', 0))  # 바닥에 닿으면 Idle 상태로 복귀
 
     def draw(mario):
-        if mario.direction ==1 :
-            mario.jump_image.draw(mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+        if(mario.fire_mode):
+            if mario.direction ==1 :
+                mario.fire_mode_jump_image.draw(mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+            else:
+                mario.fire_mode_jump_image.composite_draw(0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
         else:
-            mario.jump_image.composite_draw(0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
-        pass
-
+            if mario.direction ==1 :
+                mario.jump_image.draw(mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
+            else:
+                mario.jump_image.composite_draw(0, 'h', mario.x, mario.y+mario.tall//3, 100, 100+mario.tall)
 
 class Sleep:
     @staticmethod

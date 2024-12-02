@@ -89,7 +89,7 @@ def update():
     game_world.update()
     game_world.handle_collisions()
     spawn_killer()
-    print(camera.x)
+    #print(camera.x)
     if camera.x > 2000:
         spawn_goomba()
 
