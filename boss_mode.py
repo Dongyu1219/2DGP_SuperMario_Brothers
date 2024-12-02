@@ -88,7 +88,6 @@ def update():
     global camera
     game_world.update()
     game_world.handle_collisions()
-    # Killer 생성 호출
     spawn_killer()
     print(camera.x)
     if camera.x > 2000:
@@ -111,7 +110,6 @@ def spawn_killer():
     global last_killer_spawn_time
     current_time = time.time()
     if current_time - last_killer_spawn_time >= killer_spawn_interval:
-        # 랜덤한 y 좌표 설정 (예: y 범위: 50 ~ 400)
         random_y = random.randint(150, 400)
         killer = Killer(3500, random_y, camera)
         game_world.add_object(killer, 2)
