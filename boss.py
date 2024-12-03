@@ -34,6 +34,9 @@ class Killer:
         if group == 'mario:goomba':
             print("Mario and Killer collided!")
             #game_world.remove_object(self)
+        if group == 'goomba:ball':
+            print("fire and Goomba collided!")
+            game_world.remove_object(self)  # 공 삭제
 
 
 class Koopa:
@@ -43,6 +46,7 @@ class Koopa:
         self.direction = 1
         self.image = load_image('resource/enemy/koopa_running.png')
         self.camera = camera
+        self.hp = 5
 
     def update(self):
         self.frame = (self.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time/3) % M_FRAMES_PER_ACTION
@@ -62,12 +66,17 @@ class Koopa:
         pass
 
     def get_bb(self):
-        return self.x - 30, self.y -30, self.x + 30, self.y +30
+        return self.x - 70, self.y -70, self.x + 60, self.y +60
 
     def handle_collision(self, group, other):
         if group == 'mario:goomba':
             print("Mario and Goomba collided!")
             game_world.remove_object(self)
+        if group == 'goomba:ball':
+            print('kooper hurts')
+            self.hp -=1
+            if self.hp<1:
+                game_world.remove_object(self)
 
 class Lava:
     def __init__(self, x, camera):
@@ -120,7 +129,7 @@ class Boss_Goomba:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
         self.x -= self.direction * RUN_SPEED_PPS * game_framework.frame_time
-        if self.x < 2500:
+        if self.x < 2450:
             game_world.remove_object(self)
 
     def draw(self):
@@ -142,4 +151,7 @@ class Boss_Goomba:
     def handle_collision(self, group, other):
         if group == 'mario:goomba':
             print("Mario and Goomba collided!")
+            game_world.remove_object(self)
+        if group == 'goomba:ball':
+            print("fire and Goomba collided!")
             game_world.remove_object(self)

@@ -24,7 +24,7 @@ class Mario:
             self.camera = camera
             self.tall = 0
             self.big_Mode = False
-            self.fire_mode = True
+            self.fire_mode = False
 
             self.velocity_y = 0  # 중력을 반영한 수직 속도
             self.is_grounded = False  # 블록 위에 있는 상태
@@ -79,7 +79,7 @@ class Mario:
 
     def fire_ball(self):
         if self.fire_mode:
-            ball = Ball(self.x, self.y, self.direction * 10)
+            ball = Ball(self.x, self.y, self.direction * 10, self.world_x)
             game_world.add_object(ball, 2)
             game_world.add_collision_pair('goomba:ball', None, ball)
 
@@ -132,7 +132,7 @@ class Mario:
                 other.creating = 1
             if other.hit > 1:
                 print(f'other.hit')
-                delay(1.0)
+                #delay(1.0)
                 self.tall = 60
                 self.big_Mode = True
 
@@ -141,7 +141,7 @@ class Mario:
                 other.creating = 1
             if other.hit > 1:
                 print(f'other.hit')
-                delay(1.0)
+                #delay(1.0)
                 self.fire_mode = True
 
         if group == 'mario:pipe_house':

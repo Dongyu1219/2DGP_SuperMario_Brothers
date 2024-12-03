@@ -15,7 +15,7 @@ from boss import Lava, Koopa, Killer, Boss_Goomba
 
 last_killer_spawn_time = 0
 killer_spawn_interval = 4
-last_goomba_spawn_time = 0  # 마지막으로 Killer가 생성된 시간
+last_goomba_spawn_time = 0
 goomba_spawn_interval = 3
 
 def handle_events():
@@ -74,6 +74,8 @@ def init():
 
     koopa = Koopa(3000, 155 ,camera)
     game_world.add_object(koopa, 1)
+    game_world.add_collision_pair('mario:goomba', mario, koopa)
+    game_world.add_collision_pair('goomba:ball', koopa, None)
 
     game_world.add_collision_pair('mario:fire_item', mario, item)
     game_world.add_collision_pair('mario:item_block', mario, item_block)
@@ -113,7 +115,8 @@ def spawn_killer():
         random_y = random.randint(150, 400)
         killer = Killer(3500, random_y, camera)
         game_world.add_object(killer, 2)
-        game_world.add_collision_pair('mario:goomba', mario, killer)
+        game_world.add_collision_pair('mario:goomba', None, killer)
+        game_world.add_collision_pair('goomba:ball', killer, None)
         print(f"Killer spawned at x=3000, y={random_y}")
         last_killer_spawn_time = current_time
 
@@ -121,8 +124,9 @@ def spawn_goomba():
     global last_goomba_spawn_time
     current_time = time.time()
     if current_time - last_goomba_spawn_time >= goomba_spawn_interval:
-        goomba = Boss_Goomba(3500, 110, camera)
-        game_world.add_object(goomba, 1)
-        game_world.add_collision_pair('mario:goomba', mario, goomba)
+        boss_goomba = Boss_Goomba(3200, 110, camera)
+        game_world.add_object(boss_goomba, 1)
+        game_world.add_collision_pair('mario:goomba', None, boss_goomba)
+        game_world.add_collision_pair('goomba:ball', boss_goomba, None)
         print(f"Killer spawned at x=3000, y={155}")
         last_goomba_spawn_time = current_time
