@@ -46,15 +46,16 @@ class Goomba:
             game_world.remove_object(self)
 
 class Flower:
-    def __init__(self, x, y, camera):
+    def __init__(self, x, y, f_velocity, camera):
         self.x, self.y = x, y
         self.frame = 0
         self.flower_image = load_image('resource/enemy/flower_enemies.png')
         self.camera = camera
         self.direction = 1
-        self.max_y = 225  # 최고점
-        self.min_y = 120  # 최저점
-        self.time_elapsed = 0  # 타이머 변수
+        self.max_y = 225
+        self.min_y = 120
+        self.time_elapsed = 0
+        self.velocity = f_velocity
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
@@ -70,8 +71,7 @@ class Flower:
                 self.direction = 1
                 self.time_elapsed = 0
 
-            # y 위치 업데이트
-        self.y += self.direction * RUN_SPEED_PPS//6 * game_framework.frame_time
+        self.y += self.direction * RUN_SPEED_PPS//self.velocity * game_framework.frame_time
         pass
 
     def draw(self):
@@ -85,7 +85,6 @@ class Flower:
 
     def handle_event(self, event):
         pass
-
 
     def get_bb(self):
         return self.x - 10, self.y -60, self.x + 10, self.y +20
