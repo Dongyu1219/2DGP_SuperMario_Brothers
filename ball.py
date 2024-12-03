@@ -7,7 +7,7 @@ from game_world import world
 class Ball:
     image = None
 
-    def __init__(self, x=400, y=300, velocity=0.5, world_x = None):
+    def __init__(self, x=250, y=300, velocity=0.5, world_x = 300):
         if Ball.image is None:
             Ball.image = load_image('resource/mario/fire.png')
         self.x, self.y = x, y
@@ -15,7 +15,7 @@ class Ball:
         self.velocity_y = 10  # 초기 y축 속도
         self.gravity = -2.5  # 중력 효과
         self.bounce_count = 0  # 튕긴 횟수
-        self.world_x = None
+        self.world_x = world_x
         #self.camera = camera
 
     def draw(self):
@@ -43,13 +43,14 @@ class Ball:
         if self.x < 0 or self.x > 1600:
             game_world.remove_object(self)
 
-        print(self.world_x)
+        print(self.world_x + self.x )
 
     def get_bb_draw(self):
         return self.x - 10, self.y - 10, self.x + 10, self.y + 10
 
     def get_bb(self):
-        return self.world_x - 10, self.y - 10, self.world_x + 10, self.y + 10
+
+        return self.world_x + self.x -250 - 10, self.y - 10, self.world_x + self.x -250 + 10, self.y + 10
 
     def handle_collision(self, group, other):
         if group == 'goomba:ball':

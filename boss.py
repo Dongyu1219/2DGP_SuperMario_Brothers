@@ -71,7 +71,7 @@ class Koopa:
     def handle_collision(self, group, other):
         if group == 'mario:goomba':
             print("Mario and Goomba collided!")
-            game_world.remove_object(self)
+            #game_world.remove_object(self)
         if group == 'goomba:ball':
             print('kooper hurts')
             self.hp -=1

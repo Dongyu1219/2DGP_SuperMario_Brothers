@@ -24,7 +24,7 @@ class Mario:
             self.camera = camera
             self.tall = 0
             self.big_Mode = False
-            self.fire_mode = False
+            self.fire_mode = True
 
             self.velocity_y = 0  # 중력을 반영한 수직 속도
             self.is_grounded = False  # 블록 위에 있는 상태
