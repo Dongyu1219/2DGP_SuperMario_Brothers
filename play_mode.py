@@ -35,6 +35,8 @@ def init():
     global flower1, flower3, flower4
     global pipe_house1, pipe_house2, pipe_house3, pipe_house4
 
+    game_world.clear()  # game_world에서 모든 객체 삭제
+
     camera = Camera()
     game_world.add_object(camera, 0)
 

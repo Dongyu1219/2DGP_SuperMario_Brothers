@@ -2,6 +2,7 @@ from asyncio import Runner
 #this is main
 from pico2d import load_image, get_time, draw_rectangle, delay, load_wav
 
+import game_over
 import game_world
 from ball import Ball
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
@@ -75,9 +76,9 @@ class Mario:
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
-        print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
+        #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
         if not self.is_grounded:
-            self.velocity_y -= 1  # 중력 가속도
+            self.velocity_y -= 1
         self.y += self.velocity_y
         if self.world_x > 1300 and self.world_x < 1380:
             self.is_grounded = False
@@ -175,40 +176,40 @@ class Mario:
         if group == 'mario:pipe_house':
             # 벽 위로 올라갈 때
             if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10 and self.die :
-                if self.velocity_y <= 0:  # 낙하 중일 때만
-                    self.y = o_top+40  # Mario의 y 위치를 벽의 상단으로 고정
-                    self.velocity_y = 0  # 중력 초기화
+                if self.velocity_y <= 0:
+                    self.y = o_top+40
+                    self.velocity_y = 0
                     self.is_grounded = True
                 return
 
             # 벽의 왼쪽과 충돌
             if right > o_left+10  > left and self.die:
-                self.world_x = o_left+10 - (right - left) # 위치 보정
-                self.x = self.world_x - self.camera.x  # 로컬 좌표도
+                self.world_x = o_left+10 - (right - left)
+                self.x = self.world_x - self.camera.x
                 self.state_machine.add_event(('RIGHT_STOP', 0))
                 print("Right collision with wall")
 
 
             # 벽의 오른쪽과 충돌
             if left < o_right-10 < right and self.die:
-                self.world_x = o_right-10 + (right - left)  # 위치 보정
-                self.x = self.world_x - self.camera.x  # 로컬 좌표도 업데이트
+                self.world_x = o_right-10 + (right - left)
+                self.x = self.world_x - self.camera.x
                 self.state_machine.add_event(('LEFT_STOP', 0))
                 print("Left collision with wall")
 
         if group == 'mario:wall':
             # 벽 위로 올라갈 때
             if bottom < o_top+40 < top and right > o_left-10 and left < o_right+10 and self.die :
-                if self.velocity_y <= 0:  # 낙하 중일 때만
-                    self.y = o_top+40  # Mario의 y 위치를 벽의 상단으로 고정
-                    self.velocity_y = 0  # 중력 초기화
+                if self.velocity_y <= 0:
+                    self.y = o_top+40
+                    self.velocity_y = 0
                     self.is_grounded = True
                 return
 
             # 벽의 왼쪽과 충돌
             if right > o_left+10  > left and self.die:
-                self.world_x = o_left+10 - (right - left) # 위치 보정
-                self.x = self.world_x - self.camera.x  # 로컬 좌표도
+                self.world_x = o_left+10 - (right - left)
+                self.x = self.world_x - self.camera.x
                 self.state_machine.add_event(('RIGHT_STOP', 0))
                 print("Right collision with wall")
 
@@ -236,8 +237,9 @@ class Die:
     def enter(mario, e):
         print('Mario Die Enter')
         Mario.death_sound.play()
-        mario.velocity_y = 15  # 초기 수직 속도
+        mario.velocity_y = 10  # 초기 수직 속도
         mario.die = False
+        mario.die_start_time = get_time()  # 죽기 시작한 시간 기록
         pass
 
     @staticmethod
@@ -247,6 +249,12 @@ class Die:
 
     @staticmethod
     def do(mario):
+        mario.y += mario.velocity_y
+        mario.velocity_y -= 0.3
+
+
+        if get_time() - mario.die_start_time >= 2.0:
+            game_framework.change_mode(game_over)
         pass
 
     def draw(mario):
@@ -362,9 +370,9 @@ class Run:
 class Jump:
     @staticmethod
     def enter(mario, e):
-        if not mario.is_jumping:  # 점프 중이 아닐 때만 사운드 재생
+        if not mario.is_jumping:
             Mario.jump_sound.play()
-            mario.is_jumping = True  # 점프 시작
+            mario.is_jumping = True
         #print('Mario Jump Enter')
         if up_down(e) and mario.big_Mode == False:
             mario.velocity_y = 20
@@ -382,8 +390,8 @@ class Jump:
     @staticmethod
     def do(mario):
         if mario.is_grounded:
-            mario.is_jumping = False  # 바닥에 닿으면 점프 상태 해제
-            mario.state_machine.add_event(('JUMP_DOWN', 0))  # 바닥에 닿으면 Idle 상태로 복귀
+            mario.is_jumping = False
+            mario.state_machine.add_event(('JUMP_DOWN', 0))
 
     def draw(mario):
         if(mario.fire_mode):

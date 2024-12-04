@@ -98,7 +98,7 @@ def update():
     game_world.handle_collisions()
     spawn_killer()
     #print(camera.x)
-    if camera.x > 2000:
+    if camera.x > 2000 and koopa.hp>0:
         spawn_goomba()
 
 def draw():
