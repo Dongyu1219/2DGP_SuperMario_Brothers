@@ -44,7 +44,7 @@ def init():
     goomba = Goomba(camera)
     game_world.add_object(goomba, 1)
 
-    flower1 = Flower(885, 225, 3, camera)
+    flower1 = Flower(885, 225, 6, camera)
     game_world.add_object(flower1, 1)
 
     pipe_house1 = Pipe(865, 80, camera)

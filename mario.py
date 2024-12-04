@@ -1,6 +1,6 @@
 from asyncio import Runner
 #this is main
-from pico2d import load_image, get_time, draw_rectangle, delay
+from pico2d import load_image, get_time, draw_rectangle, delay, load_wav
 
 import game_world
 from ball import Ball
@@ -11,12 +11,16 @@ from state_machine import *
 from map import *
 
 class Mario:
+    fireball_sound = None
+    up_sound = None
+    down_sound = None
+    block_hit_sound = None
+    jump_sound = None
+    death_sound = None
+
     def __init__(self, camera):
             self.x = 100
             self.y = 126
-            # 물리 좌표계로 바꿔야 함.
-            #self.x = server.background.w / 2
-            #self.y = server.background.h / 2
             self.world_x = 0
             self.frame = 0
             self.direction = 0
@@ -26,8 +30,9 @@ class Mario:
             self.big_Mode = False
             self.fire_mode = False
 
-            self.velocity_y = 0  # 중력을 반영한 수직 속도
-            self.is_grounded = False  # 블록 위에 있는 상태
+            self.velocity_y = 0
+            self.is_grounded = False
+            self.is_jumping = False
 
             self.image = load_image('resource/mario/small_mario_runningsheet.png')
             self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
@@ -49,10 +54,28 @@ class Mario:
                 }
             )
 
+            if not Mario.fireball_sound:
+                Mario.fireball_sound = load_wav('sound/fireball.wav')
+                Mario.fireball_sound.set_volume(32)
+
+                Mario.up_sound = load_wav('sound/power_up.wav')
+                Mario.up_sound.set_volume(32)
+                Mario.down_sound = load_wav('sound/power_down.wav')
+                Mario.down_sound.set_volume(32)
+
+                Mario.block_hit_sound = load_wav('sound/block_hit.wav')
+                Mario.block_hit_sound.set_volume(32)
+
+                Mario.jump_sound = load_wav('sound/jump.wav')
+                Mario.jump_sound.set_volume(32)
+
+                Mario.death_sound = load_wav('sound/death.wav')
+                Mario.death_sound.set_volume(32)
+
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
-        #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
+        print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
         if not self.is_grounded:
             self.velocity_y -= 1  # 중력 가속도
         self.y += self.velocity_y
@@ -64,7 +87,7 @@ class Mario:
             self.velocity_y = 0
             self.is_grounded = True
         else:
-            self.is_grounded = False  # 공중 상태로 전환
+            self.is_grounded = False
 
     def handle_event(self, event):
         self.state_machine.add_event(
@@ -81,6 +104,7 @@ class Mario:
         if self.fire_mode:
             ball = Ball(self.x, self.y, self.direction * 10, self.world_x)
             game_world.add_object(ball, 2)
+            Mario.fireball_sound.play()
             game_world.add_collision_pair('goomba:ball', None, ball)
 
 
@@ -103,6 +127,7 @@ class Mario:
                 self.is_grounded = True
             elif top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
                 self.y = o_bottom - (top - bottom)
+                Mario.block_hit_sound.play()
                 self.velocity_y = -1  # 반발력
             # 수평 충돌 처리
             if right > o_left > left:  # 오른쪽 블록과 충돌
@@ -117,7 +142,8 @@ class Mario:
                 self.is_grounded = True
             elif top > o_bottom > bottom:  # 위에서 블록 아래로 충돌
                 self.y = o_bottom - (top - bottom)
-                self.velocity_y = -1  # 반발력
+                self.velocity_y = -1
+                Mario.block_hit_sound.play()
                 other.hit = False
                 other.is_rising = True
                 other.rise_start_time = get_time()  # 충돌 시점 시간 기록
@@ -133,6 +159,7 @@ class Mario:
             if other.hit > 1:
                 print(f'other.hit')
                 #delay(1.0)
+                Mario.up_sound.play()
                 self.tall = 60
                 self.big_Mode = True
 
@@ -142,6 +169,7 @@ class Mario:
             if other.hit > 1:
                 print(f'other.hit')
                 #delay(1.0)
+                Mario.up_sound.play()
                 self.fire_mode = True
 
         if group == 'mario:pipe_house':
@@ -197,6 +225,7 @@ class Mario:
             if (self.big_Mode == False):
                 self.state_machine.add_event(('DIE', 0))
             else:
+                Mario.down_sound.play()
                 self.big_Mode = False
                 self.tall = 0
             #game_framework.quit()
@@ -206,6 +235,7 @@ class Die:
     @staticmethod
     def enter(mario, e):
         print('Mario Die Enter')
+        Mario.death_sound.play()
         mario.velocity_y = 15  # 초기 수직 속도
         mario.die = False
         pass
@@ -332,6 +362,9 @@ class Run:
 class Jump:
     @staticmethod
     def enter(mario, e):
+        if not mario.is_jumping:  # 점프 중이 아닐 때만 사운드 재생
+            Mario.jump_sound.play()
+            mario.is_jumping = True  # 점프 시작
         #print('Mario Jump Enter')
         if up_down(e) and mario.big_Mode == False:
             mario.velocity_y = 20
@@ -349,6 +382,7 @@ class Jump:
     @staticmethod
     def do(mario):
         if mario.is_grounded:
+            mario.is_jumping = False  # 바닥에 닿으면 점프 상태 해제
             mario.state_machine.add_event(('JUMP_DOWN', 0))  # 바닥에 닿으면 Idle 상태로 복귀
 
     def draw(mario):

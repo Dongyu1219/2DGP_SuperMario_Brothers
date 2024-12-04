@@ -129,7 +129,7 @@ class Boss_Goomba:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
         self.x -= self.direction * RUN_SPEED_PPS * game_framework.frame_time
-        if self.x < 2450:
+        if self.x < 2400:
             game_world.remove_object(self)
 
     def draw(self):

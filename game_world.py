@@ -45,8 +45,10 @@ def remove_object(o):
     #print('ERROR : DO NOT EXIST')
 
 def clear():
+    global world, collision_paris
     for layer in world:
         layer.clear()
+    collision_paris.clear()  # 충돌 처리 데이터 초기화
 
 
 def collide(a, b):

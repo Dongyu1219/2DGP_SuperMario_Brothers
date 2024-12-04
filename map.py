@@ -1,9 +1,12 @@
-from pico2d import load_image
+from pico2d import load_image, load_music
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT
 class Map_1:
     def __init__(self, camera):
         self.world_1 = load_image('resource/map/World-1.png')
         self.camera = camera
+        self.bgm = load_music('sound/BGM1.mp3')
+        self.bgm.set_volume(32)
+        self.bgm.repeat_play()
     def update(self):
         pass
 
@@ -21,6 +24,9 @@ class Boss_Map:
     def __init__(self, camera):
         self.boss_world = load_image('resource/map/boss_map.png')
         self.camera = camera
+        self.bgm = load_music('sound/boss_BGM.mp3')
+        self.bgm.set_volume(32)
+        self.bgm.repeat_play()
     def update(self):
         pass
 

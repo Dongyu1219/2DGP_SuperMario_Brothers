@@ -1,6 +1,10 @@
 from pico2d import load_image, get_events, clear_canvas, update_canvas
+
+import boss_mode
 import game_framework
 from sdl2 import SDL_QUIT, SDLK_ESCAPE, SDL_KEYDOWN, SDLK_SPACE
+
+import game_world
 import play_mode
 from mario import Mario
 from numbers import M_FRAMES_PER_ACTION, ACTION_PER_TIME
@@ -53,7 +57,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-            game_framework.change_mode(play_mode)
+            game_world.clear()
+            game_framework.change_mode(boss_mode)
 
 def draw():
     clear_canvas()

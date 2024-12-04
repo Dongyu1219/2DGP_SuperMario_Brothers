@@ -10,6 +10,7 @@ import game_world
 import game_framework
 import title_mode
 from boss import Lava, Koopa, Killer, Boss_Goomba
+from princess import Peach
 
 #import item_mode
 
@@ -39,6 +40,7 @@ def init():
     global mario
     global item
     global koopa
+    global peach
 
     camera = Camera()
     game_world.add_object(camera, 0)
@@ -73,7 +75,11 @@ def init():
         game_world.add_collision_pair('mario:block', mario, block)
 
     koopa = Koopa(3000, 155 ,camera)
-    game_world.add_object(koopa, 1)
+    game_world.add_object(koopa, 2)
+
+    peach = Peach(3000, 60, camera)
+    game_world.add_object(peach, 1)
+
     game_world.add_collision_pair('mario:goomba', mario, koopa)
     game_world.add_collision_pair('goomba:ball', koopa, None)
 

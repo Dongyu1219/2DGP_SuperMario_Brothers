@@ -6,6 +6,8 @@ from game_world import world
 
 class Ball:
     image = None
+    fire_sound = None
+    kill_sound = None
 
     def __init__(self, x=250, y=300, velocity=0.5, world_x = 300):
         if Ball.image is None:
@@ -17,6 +19,13 @@ class Ball:
         self.bounce_count = 0  # 튕긴 횟수
         self.world_x = world_x
         #self.camera = camera
+
+        if not Ball.fire_sound:
+            Ball.fire_sound = load_wav('sound/fireball.wav')
+            Ball.kill_sound = load_wav('sound/kill_mob.wav')
+            Ball.fire_sound.set_volume(32)
+            Ball.kill_sound.set_volume(32)
+
 
     def draw(self):
         self.image.draw(self.x, self.y)
@@ -54,5 +63,6 @@ class Ball:
 
     def handle_collision(self, group, other):
         if group == 'goomba:ball':
+            Ball.kill_sound.play()
             game_world.remove_object(self)  # 공 삭제
             #game_world.remove_object(other)  # 적 삭제
