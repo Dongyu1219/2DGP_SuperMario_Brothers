@@ -31,7 +31,7 @@ class Goomba:
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
-        draw_rectangle(screen_left, bottom, screen_right, top)
+        #draw_rectangle(screen_left, bottom, screen_right, top)
         #print(f"Goomba Screen X: {screen_x}")
 
     def handle_event(self, event):
@@ -81,7 +81,7 @@ class Flower:
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
-        draw_rectangle(screen_left, bottom, screen_right, top)
+        #draw_rectangle(screen_left, bottom, screen_right, top)
 
     def handle_event(self, event):
         pass

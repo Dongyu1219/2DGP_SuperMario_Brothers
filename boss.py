@@ -21,7 +21,7 @@ class Killer:
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
-        draw_rectangle(screen_left, bottom, screen_right, top)
+        #draw_rectangle(screen_left, bottom, screen_right, top)
         #print(f"Goomba Screen X: {screen_x}")
 
     def handle_event(self, event):
@@ -46,7 +46,7 @@ class Koopa:
         self.direction = 1
         self.image = load_image('resource/enemy/koopa_running.png')
         self.camera = camera
-        self.hp = 5
+        self.hp = 20
 
     def update(self):
         self.frame = (self.frame + M_FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time/3) % M_FRAMES_PER_ACTION
@@ -59,7 +59,7 @@ class Koopa:
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
-        draw_rectangle(screen_left, bottom, screen_right, top)
+        #draw_rectangle(screen_left, bottom, screen_right, top)
         #print(f"Goomba Screen X: {screen_x}")
 
     def handle_event(self, event):
@@ -94,7 +94,7 @@ class Lava:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.goomba.clip_draw(int(self.frame)*10, 0, 60, 32, screen_x, self.y, 180, 70)
-        draw_rectangle(*self.get_bb_draw())
+        #draw_rectangle(*self.get_bb_draw())
 
     def handle_event(self, event):
         pass
@@ -139,7 +139,7 @@ class Boss_Goomba:
         left, bottom, right, top = self.get_bb()
         screen_left = left - self.camera.x
         screen_right = right - self.camera.x
-        draw_rectangle(screen_left, bottom, screen_right, top)
+        #draw_rectangle(screen_left, bottom, screen_right, top)
         #print(f"Goomba Screen X: {screen_x}")
 
     def handle_event(self, event):

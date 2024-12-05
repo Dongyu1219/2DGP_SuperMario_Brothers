@@ -27,8 +27,8 @@ class Item:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.image.draw(screen_x, self.y, 40, 40)
-        draw_rectangle(*self.get_bb_draw())
-        #draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb_draw())
+
 
     def handle_collision(self, group, other):
         if group == 'mario:item':
@@ -68,15 +68,15 @@ class Fire_Item:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.image.draw(screen_x, self.y, 40, 40)
-        draw_rectangle(*self.get_bb_draw())
-        #draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb_draw())
+
 
     def handle_collision(self, group, other):
         if group == 'mario:fire_item':
             self.hit += 1
             if self.hit > 3:
                 game_world.remove_object(self)
-                print('deleted')
+                #print('deleted')
             pass
 
     def update(self):

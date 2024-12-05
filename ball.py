@@ -29,7 +29,7 @@ class Ball:
 
     def draw(self):
         self.image.draw(self.x, self.y)
-        draw_rectangle(*self.get_bb_draw())
+        #draw_rectangle(*self.get_bb_draw())
 
     def update(self):
         # x축 이동
@@ -52,7 +52,7 @@ class Ball:
         if self.x < 0 or self.x > 1600:
             game_world.remove_object(self)
 
-        print(self.world_x + self.x )
+        #print(self.world_x + self.x )
 
     def get_bb_draw(self):
         return self.x - 10, self.y - 10, self.x + 10, self.y + 10

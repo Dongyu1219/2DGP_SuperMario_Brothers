@@ -4,6 +4,7 @@ from pico2d import load_image, get_time, draw_rectangle, delay, load_wav
 
 import game_over
 import game_world
+import logo_mode
 from ball import Ball
 from numbers import ACTION_PER_TIME, M_FRAMES_PER_ACTION, RUN_SPEED_PPS
 import game_framework
@@ -34,6 +35,7 @@ class Mario:
             self.velocity_y = 0
             self.is_grounded = False
             self.is_jumping = False
+            self.meet_peach = False  # 공주와 만났는지 상태를 저장하는 플래그
 
             self.image = load_image('resource/mario/small_mario_runningsheet.png')
             self.sit_image = load_image('resource/mario/small_mario_sit_image.png')
@@ -76,6 +78,9 @@ class Mario:
     def update(self):
         self.state_machine.update()
         self.world_x = self.x + self.camera.x
+        if self.meet_peach:  # 공주와 만난 경우
+            game_framework.change_mode(logo_mode)
+            return  # 상태 전환 후 더 이상 처리하지 않음
         #print(f"Mario: X = {self.x},  Wolrd.x = {self.world_x } , Y = {self.y}")                                   #위치 디버깅
         if not self.is_grounded:
             self.velocity_y -= 1
@@ -99,7 +104,7 @@ class Mario:
     def draw(self):
             self.state_machine.draw()
             #self.mario.clip_draw(self.frame*35, 0, 34, 26, self.x, self.y, 100, 100)
-            draw_rectangle(*self.get_bb_draw())
+            #draw_rectangle(*self.get_bb_draw())
 
     def fire_ball(self):
         if self.fire_mode:
@@ -183,7 +188,7 @@ class Mario:
                 return
 
             # 벽의 왼쪽과 충돌
-            if right > o_left+10  > left and self.die:
+            if right > o_left+1  > left and self.die:
                 self.world_x = o_left+10 - (right - left)
                 self.x = self.world_x - self.camera.x
                 self.state_machine.add_event(('RIGHT_STOP', 0))
@@ -191,7 +196,7 @@ class Mario:
 
 
             # 벽의 오른쪽과 충돌
-            if left < o_right-10 < right and self.die:
+            if left < o_right-1 < right and self.die:
                 self.world_x = o_right-10 + (right - left)
                 self.x = self.world_x - self.camera.x
                 self.state_machine.add_event(('LEFT_STOP', 0))
@@ -231,11 +236,14 @@ class Mario:
                 self.tall = 0
             #game_framework.quit()
 
+        if group == 'mario:peach':
+            print("prince collide ")
+            self.meet_peach = True
 
 class Die:
     @staticmethod
     def enter(mario, e):
-        print('Mario Die Enter')
+        #print('Mario Die Enter')
         Mario.death_sound.play()
         mario.velocity_y = 10  # 초기 수직 속도
         mario.die = False
@@ -244,7 +252,7 @@ class Die:
 
     @staticmethod
     def exit(mario, e):
-        print('Mario Sleep Exit')
+        #print('Mario Sleep Exit')
         pass
 
     @staticmethod
@@ -275,7 +283,7 @@ class Idle:
         pass
     @staticmethod
     def do(mario):
-        if get_time() - mario.wait_time >2:
+        if get_time() - mario.wait_time >5:
             mario.state_machine.add_event(('TIME_OUT', 0))
     @staticmethod
     def draw(mario):
@@ -297,12 +305,12 @@ class Left_Stop:
     def enter(mario,e):
         mario.direction = -1
         mario.camera.stop_movement()
-        print('Mario Left_Stop Enter')
+        #print('Mario Left_Stop Enter')
         pass
     @staticmethod
     def exit(mario, e):
         mario.camera.resume_movement()
-        print('Mario Stop Exit')
+        #print('Mario Stop Exit')
     @staticmethod
     def do(mario):
         pass
@@ -314,12 +322,12 @@ class Right_Stop:
     def enter(mario,e):
         mario.direction = 0
         mario.camera.stop_movement()
-        print('Mario Right_Stop Enter')
+        #print('Mario Right_Stop Enter')
         pass
     @staticmethod
     def exit(mario, e):
         mario.camera.resume_movement()
-        print('Mario Stop Exit')
+        #print('Mario Stop Exit')
     @staticmethod
     def do(mario):
         pass

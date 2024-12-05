@@ -25,8 +25,8 @@ class Block:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.image.draw(screen_x, self.y, 40, 40)
-        draw_rectangle(*self.get_bb_draw())
-        #draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb_draw())
+
 
     def handle_collision(self, group, other):
         pass
@@ -80,8 +80,8 @@ class Iteam_Block:
 
             self.image.draw(screen_x, self.y, 40, 40)
 
-        draw_rectangle(*self.get_bb_draw())
-        #draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb_draw())
+
 
     def handle_collision(self, group, other):
         pass
@@ -127,8 +127,8 @@ class Break_Block:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.image.draw(screen_x, self.y, 40, 40)
-        draw_rectangle(*self.get_bb_draw())
-        #draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb_draw())
+
 
     def handle_collision(self, group, other):
         game_world.remove_object(self)
@@ -158,8 +158,7 @@ class Pipe:
     def draw(self):
         screen_x = self.x - self.camera.x
         self.image.draw(screen_x + self.width // 2, self.y + self.height // 2, 90, 120)
-        draw_rectangle(*self.get_bb_draw())
-        #draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb_draw())
 
     def handle_collision(self, group, other):
         pass

@@ -79,6 +79,7 @@ def init():
 
     peach = Peach(3000, 60, camera)
     game_world.add_object(peach, 1)
+    game_world.add_collision_pair('mario:peach', mario, peach)
 
     game_world.add_collision_pair('mario:goomba', mario, koopa)
     game_world.add_collision_pair('goomba:ball', koopa, None)
